@@ -375,7 +375,7 @@ fileInput.addEventListener('change',async()=>{
         const {data:{publicUrl}={}} = await imgData;
 
         // Save URL to settings
-        const{error:serr} = await sb.from('site_settings').update({logo_url: publicUrl}).eq('id',1);
+        const{error:serr} = await sb.from('site_settings').update({logo_url: publicUrl}).eq('id', 1);
         setLoad('logo',false);
         if(serr){toast('Error saving logo URL','error');return}
 
