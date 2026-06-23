@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bangladesh Roblox Community — Connect with BD Roblox YouTubers & Players</title>
-    <meta name="description" content="The largest Bangladeshi Roblox community with 5000+ members. Discover top Roblox YouTubers from Bangladesh, join game jams, get development resources, and connect with fellow creators.">
+    <meta name="description" content="The largest Bangladeshi Roblox community with 5000+ members. Discover top Roblox YouTubers from Bangladesh, join game jams, get development resources.">
     <meta name="keywords" content="Bangladesh Roblox, BD Roblox community, Roblox Bangladesh, Bangladeshi Roblox YouTubers, Roblox Bengali, Roblox Dhaka">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://bdrobloxcommunity.com/">
@@ -14,7 +14,7 @@
     <meta property="og:image" content="https://z-cdn-media.chatglm.cn/files/2502711f-3f62-422d-a717-3838b105ae96.png?auth_key=1882199017-c0d6a2ddf590473985f8527bbda07c1f-0-a4ebf0a452cbb70d7f5ad7e3910c33cb">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Bangladesh Roblox Community">
-    <meta name="twitter:description" content="The largest Bangladeshi Roblox community. Discover top Roblox YouTubers from Bangladesh.">
+    <meta name="twitter:description" content="The largest Bangladeshi Roblox community.">
     <meta name="twitter:image" content="https://z-cdn-media.chatglm.cn/files/2502711f-3f62-422d-a717-3838b105ae96.png?auth_key=1882199017-c0d6a2ddf590473985f8527bbda07c1f-0-a4ebf0a452cbb70d7f5ad7e3910c33cb">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,6 +53,13 @@
         .hero-bg{background:radial-gradient(ellipse at 20% 50%,rgba(0,106,78,.15) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(244,42,65,.1) 0%,transparent 50%),radial-gradient(ellipse at 50% 80%,rgba(0,106,78,.08) 0%,transparent 50%),#0A0A0A}
         .roblox-icon{filter:drop-shadow(0 0 8px rgba(0,106,78,.4))}
         .sk{background:#1F1F1F;border-radius:12px;animation:pulse-sk 1.5s ease-in-out infinite}
+        .yt-thumb{width:56px;height:56px;border-radius:12px;object-fit:cover;border:2px solid #1F1F1F;flex-shrink:0;background:#1F1F1F}
+        .event-card-upcoming{border-left:3px solid #006A4E}
+        .event-card-ongoing{border-left:3px solid #F59E0B}
+        .event-card-completed{border-left:3px solid #6B7280;opacity:.6}
+        .status-upcoming{background:rgba(0,106,78,.1);color:#006A4E}
+        .status-ongoing{background:rgba(245,158,11,.1);color:#F59E0B}
+        .status-completed{background:rgba(107,114,128,.1);color:#6B7280}
     </style>
 </head>
 <body class="font-sans text-white antialiased">
@@ -83,7 +90,7 @@
                 <div class="mt-16 flex flex-wrap gap-8 sm:gap-16">
                     <div><div class="text-3xl sm:text-4xl font-bold text-white">5,000+</div><div class="text-white/30 text-sm mt-1">Members</div></div>
                     <div><div class="text-3xl sm:text-4xl font-bold text-white" id="heroYTCount"><span class="sk inline-block w-12 h-9"></span></div><div class="text-white/30 text-sm mt-1">YouTubers</div></div>
-                    <div><div class="text-3xl sm:text-4xl font-bold text-white">50+</div><div class="text-white/30 text-sm mt-1">Events</div></div>
+                    <div><div class="text-3xl sm:text-4xl font-bold text-white" id="heroEvtCount"><span class="sk inline-block w-12 h-9"></span></div><div class="text-white/30 text-sm mt-1">Events</div></div>
                     <div><div class="text-3xl sm:text-4xl font-bold text-white">100+</div><div class="text-white/30 text-sm mt-1">Games</div></div>
                 </div>
             </div>
@@ -126,8 +133,23 @@
         </div>
     </nav>
 
-    <!-- ==================== NEWS SECTION (FROM DATABASE) ==================== -->
-    <section class="mt-8" aria-label="Latest News">
+    <!-- ==================== EVENTS (FROM DATABASE) ==================== -->
+    <section class="mt-8" aria-label="Community Events">
+        <div class="flex items-end justify-between mb-6 px-2">
+            <div><p class="text-xs font-semibold uppercase tracking-widest text-bd-green mb-2">What's Happening</p><h2 class="text-3xl sm:text-4xl font-medium tracking-tight">Community Events</h2></div>
+            <a href="events.html" class="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-white/40 hover:text-bd-green transition-colors">All Events <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        </div>
+        <div id="eventsSection">
+            <div class="space-y-4">
+                <div class="bg-bd-card rounded-2xl p-6 border border-bd-border"><div class="h-4 sk w-40 mb-4"></div><div class="h-6 sk w-3/4 mb-3"></div><div class="h-4 sk w-1/2 mb-6"></div><div class="flex gap-4"><div class="h-10 sk w-32"></div><div class="h-10 sk w-24"></div></div></div>
+                <div class="bg-bd-card rounded-2xl p-6 border border-bd-border"><div class="h-4 sk w-32 mb-4"></div><div class="h-6 sk w-2/3 mb-3"></div><div class="h-4 sk w-1/3 mb-6"></div><div class="flex gap-4"><div class="h-10 sk w-28"></div><div class="h-10 sk w-20"></div></div></div>
+                <div class="bg-bd-card rounded-2xl p-6 border border-bd-border"><div class="h-4 sk w-36 mb-4"></div><div class="h-6 sk w-1/2 mb-3"></div><div class="h-4 sk w-2/5 mb-6"></div><div class="flex gap-4"><div class="h-10 sk w-24"></div><div class="h-10 sk w-28"></div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== NEWS (FROM DATABASE) ==================== -->
+    <section class="mt-16" aria-label="Latest News">
         <div class="flex items-end justify-between mb-6 px-2">
             <div><p class="text-xs font-semibold uppercase tracking-widest text-bd-green mb-2">Stay Informed</p><h2 class="text-3xl sm:text-4xl font-medium tracking-tight">Latest News</h2></div>
             <a href="news.html" class="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-white/40 hover:text-bd-green transition-colors">View All <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
@@ -140,7 +162,7 @@
         </div>
     </section>
 
-    <!-- ==================== UPDATES SECTION (FROM DATABASE) ==================== -->
+    <!-- ==================== UPDATES (FROM DATABASE) ==================== -->
     <section class="mt-16" aria-label="Recent Updates">
         <div class="flex items-end justify-between mb-6 px-2">
             <div><p class="text-xs font-semibold uppercase tracking-widest text-bd-red mb-2">What's New</p><h2 class="text-3xl sm:text-4xl font-medium tracking-tight">Recent Updates</h2></div>
@@ -156,39 +178,17 @@
         </div>
     </section>
 
-    <!-- ==================== EVENT TEASER ==================== -->
-    <section class="mt-16 bg-bd-card rounded-[2rem] overflow-hidden relative border border-bd-border" aria-label="Upcoming Event">
-        <div class="absolute inset-0" aria-hidden="true"><div class="absolute top-0 right-0 w-80 h-80 bg-bd-green/5 rounded-full blur-3xl"></div><div class="absolute bottom-0 left-0 w-60 h-60 bg-bd-red/5 rounded-full blur-3xl"></div></div>
-        <div class="relative z-10 p-8 sm:p-12 lg:p-16 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-            <div class="flex-1">
-                <p class="text-xs font-semibold uppercase tracking-widest text-bd-green mb-3">Upcoming Events</p>
-                <h2 class="text-3xl sm:text-4xl font-medium text-white tracking-tight mb-4">Winter Game Jam 2024</h2>
-                <p class="text-white/40 text-lg font-light leading-relaxed mb-6">48-hour game development challenge exclusively for Bangladeshi Roblox creators. Prizes, mentorship, and recognition.</p>
-                <div class="flex flex-wrap gap-4 mb-8">
-                    <div class="flex items-center gap-2 text-white/50 text-sm"><i data-lucide="calendar" class="w-4 h-4 text-bd-green"></i> Dec 28-30, 2024</div>
-                    <div class="flex items-center gap-2 text-white/50 text-sm"><i data-lucide="trophy" class="w-4 h-4 text-bd-red"></i> ৳50,000 Prizes</div>
-                    <div class="flex items-center gap-2 text-white/50 text-sm"><i data-lucide="users" class="w-4 h-4 text-bd-green"></i> 120+ Participants</div>
-                </div>
-                <div class="flex flex-wrap gap-3">
-                    <a href="events.html" class="inline-flex items-center gap-2 bg-bd-green hover:bg-bd-green/80 text-white px-6 py-3 rounded-xl text-sm font-medium transition-all">View Details <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-                    <a href="https://discord.gg/9MKhH4TC2Q" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 glass-strong hover:bg-white/10 text-white px-6 py-3 rounded-xl text-sm font-medium transition-all">Register on Discord</a>
-                </div>
-            </div>
-            <div class="w-full lg:w-80 h-64 lg:h-72 rounded-2xl overflow-hidden flex-shrink-0 border border-bd-border"><img src="https://picsum.photos/seed/gamejam-dark/400/350.jpg" alt="Game Jam" class="w-full h-full object-cover opacity-70" loading="lazy"></div>
-        </div>
-    </section>
-
-    <!-- ==================== YOUTUBERS SECTION (FROM DATABASE) ==================== -->
+    <!-- ==================== YOUTUBERS (FROM DATABASE + YT ICONS) ==================== -->
     <section class="mt-16" aria-label="Featured Roblox YouTubers">
         <div class="flex items-end justify-between mb-6 px-2">
             <div><p class="text-xs font-semibold uppercase tracking-widest text-bd-green mb-2">Talent Spotlight</p><h2 class="text-3xl sm:text-4xl font-medium tracking-tight">Featured Roblox YouTubers</h2></div>
             <a href="creators.html" class="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-white/40 hover:text-bd-green transition-colors">All YouTubers <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
         </div>
         <div id="ytSection" class="flex gap-5 overflow-x-auto no-scrollbar pb-2">
-            <div class="min-w-[280px] sm:min-w-[300px] bg-bd-card rounded-2xl p-6 border border-bd-border"><div class="h-14 sk w-14 rounded-2xl mb-4"></div><div class="h-5 sk w-32 mb-2"></div><div class="h-3 sk w-20 mb-3"></div><div class="h-4 sk w-full mb-2"></div><div class="h-4 sk w-3/4 mb-3"></div><div class="h-6 sk w-24"></div></div>
-            <div class="min-w-[280px] sm:min-w-[300px] bg-bd-card rounded-2xl p-6 border border-bd-border"><div class="h-14 sk w-14 rounded-2xl mb-4"></div><div class="h-5 sk w-28 mb-2"></div><div class="h-3 sk w-20 mb-3"></div><div class="h-4 sk w-full mb-2"></div><div class="h-4 sk w-2/3 mb-3"></div><div class="h-6 sk w-20"></div></div>
-            <div class="min-w-[280px] sm:min-w-[300px] bg-bd-card rounded-2xl p-6 border border-bd-border"><div class="h-14 sk w-14 rounded-2xl mb-4"></div><div class="h-5 sk w-36 mb-2"></div><div class="h-3 sk w-24 mb-3"></div><div class="h-4 sk w-full mb-2"></div><div class="h-4 sk w-3/4 mb-3"></div><div class="h-6 sk w-28"></div></div>
-            <div class="min-w-[280px] sm:min-w-[300px] bg-bd-card rounded-2xl p-6 border border-bd-border"><div class="h-14 sk w-14 rounded-2xl mb-4"></div><div class="h-5 sk w-32 mb-2"></div><div class="h-3 sk w-20 mb-3"></div><div class="h-4 sk w-full mb-2"></div><div class="h-4 sk w-1/2 mb-3"></div><div class="h-6 sk w-24"></div></div>
+            <div class="min-w-[300px] bg-bd-card rounded-2xl p-6 border border-bd-border"><div class="yt-thumb sk mb-4"></div><div class="h-5 sk w-32 mb-2"></div><div class="h-3 sk w-20 mb-3"></div><div class="h-4 sk w-full mb-2"></div><div class="h-4 sk w-3/4 mb-3"></div><div class="h-6 sk w-24"></div></div>
+            <div class="min-w-[300px] bg-bd-card rounded-2xl p-6 border border-bd-border"><div class="yt-thumb sk mb-4"></div><div class="h-5 sk w-28 mb-2"></div><div class="h-3 sk w-20 mb-3"></div><div class="h-4 sk w-full mb-2"></div><div class="h-4 sk w-2/3 mb-3"></div><div class="h-6 sk w-20"></div></div>
+            <div class="min-w-[300px] bg-bd-card rounded-2xl p-6 border border-bd-border"><div class="yt-thumb sk mb-4"></div><div class="h-5 sk w-36 mb-2"></div><div class="h-3 sk w-24 mb-3"></div><div class="h-4 sk w-full mb-2"></div><div class="h-4 sk w-3/4 mb-3"></div><div class="h-6 sk w-28"></div></div>
+            <div class="min-w-[300px] bg-bd-card rounded-2xl p-6 border border-bd-border"><div class="yt-thumb sk mb-4"></div><div class="h-5 sk w-32 mb-2"></div><div class="h-3 sk w-20 mb-3"></div><div class="h-4 sk w-full mb-2"></div><div class="h-4 sk w-1/2 mb-3"></div><div class="h-6 sk w-24"></div></div>
         </div>
     </section>
 
@@ -238,13 +238,13 @@
         </div>
         <div class="border-t border-bd-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p class="text-xs text-white/20">&copy; 2024 Bangladesh Roblox Community. Not affiliated with Roblox Corporation.</p>
-            <div class="flex items-center gap-2 text-xs text-white/20">Made with <span class="text-bd-red">❤️</span> in Bangladesh <svg class="roblox-icon ml-1" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.164 0L0 18.627 18.836 24 24 5.373 5.164 0z" fill="rgba(255,255,255,.3)"/><path d="M9.6 7.2l-3.6 14.4 8.4 2.1 3.6-14.4-8.4-2.1z" fill="#0A0A0A"/></svg></div>
+            <div class="flex items-center gap-2 text-xs text-white/20">Made with <span class="text-bd-red">❤️</span> in Bangladesh</div>
         </div>
     </footer>
 
 </div>
 
-<!-- ==================== SUPABASE DATABASE CONNECTION ==================== -->
+<!-- ==================== SUPABASE + YOUTUBE OEMBED ==================== -->
 <script>
 lucide.createIcons();
 
@@ -253,36 +253,138 @@ const sb = window.supabase.createClient(
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmdnpqZHh1Y2lqcXNpamljYXRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxOTI4ODgsImV4cCI6MjA5Nzc2ODg4OH0.w0Pf64wjp0hlP2tIVl2ijJAepy8pszYiyzFx4uGeXAM'
 );
 
-const CC={community:'blue',partnership:'green',achievement:'amber',education:'purple',announcement:'red',featured:'red',gameplay:'red',tutorials:'blue',reviews:'amber',building:'emerald',scripting:'purple',edits:'pink',challenges:'orange',news:'blue',vlogs:'cyan',server:'amber',events:'purple',resources:'blue',features:'green',bugfix:'red'};
-const CT={gameplay:'Gameplay',tutorials:'Tutorials',reviews:'Reviews',building:'Building',scripting:'Scripting',edits:'Edits',challenges:'Challenges',news:'Roblox News',vlogs:'Vlogs'};
-const BL={top:'⭐ Top YouTuber',rising:'🚀 Rising Star',verified:'✅ Verified'};
-const IC={server:'shield-check',events:'gamepad-2',community:'users',resources:'book-open',features:'sparkles',bugfix:'bug'};
-const YT_IMG='https://picsum.photos/seed/yt';
+const CC={community:'blue',partnership:'green',achievement:'amber',education:'purple',announcement:'red',featured:'red',gameplay:'red',tutorials:'blue',reviews:'amber',building:'emerald',scripting:'purple',edits:'pink',challenges:'orange',news:'blue',vlogs:'cyan',server:'amber',events:'purple',resources:'blue',features:'green',bugfix:'red',gamejam:'green',workshop:'blue',contest:'amber',meetup:'emerald'};
+const CT={gameplay:'Gameplay',tutorials:'Tutorials',reviews:'Reviews',building:'Building',scripting:'Scripting',edits:'Edits',challenges:'Challenges',news:'Roblox News',vlogs:'Vlogs',gamejam:'Game Jam',workshop:'Workshop',contest:'Contest',meetup:'Meetup'};
+const BL={top:'⭐ Top',rising:'🚀 Rising',verified:'✅ Verified'};
+const IC={server:'shield-check',events:'gamepad-2',community:'users',resources:'book-open',features:'sparkles',bugfix:'bug',gamejam:'trophy',workshop:'book-open',contest:'swords',meetup:'map-pin'};
 
 function fmtDate(d){if(!d)return'';return new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+function fmtDateRange(s,e){if(!s)return'';let r=fmtDate(s);if(e&&e!==s)r+=' – '+fmtDate(e);return r}
 
-// ===== LOAD ALL DATA FROM SUPABASE =====
+// ===== YOUTUBE THUMBNAIL FROM LINK (oEmbed - no API key needed) =====
+const ytThumbCache = {};
+async function getYTThumb(url){
+    if(!url) return null;
+    if(ytThumbCache[url]) return ytThumbCache[url];
+    try{
+        const res = await fetch('https://www.youtube.com/oembed?url='+encodeURIComponent(url)+'&format=json');
+        if(!res.ok) return null;
+        const data = await res.json();
+        if(data && data.thumbnail_url){
+            // Get higher res thumbnail
+            let thumb = data.thumbnail_url;
+            thumb = thumb.replace('/hqdefault.jpg','/mqdefault_320x180.jpg');
+            ytThumbCache[url] = thumb;
+            return thumb;
+        }
+    }catch(e){}
+    return null;
+}
+
+// ===== LOAD ALL DATA =====
 async function loadAll(){
     try {
-        const [ytRes, newsRes, updRes] = await Promise.all([
+        const [ytRes, newsRes, updRes, evtRes] = await Promise.all([
             sb.from('creators').select('*').order('created_at', {ascending: false}),
             sb.from('news').select('*').order('created_at', {ascending: false}),
-            sb.from('updates').select('*').order('created_at', {ascending: false})
+            sb.from('updates').select('*').order('created_at', {ascending: false}),
+            sb.from('events').select('*').order('date_start', {ascending: false})
         ]);
 
-        // ===== RENDER YOUTUBERS =====
+        // ===== RENDER EVENTS =====
+        const evtList = evtRes.data || [];
+        const upEvtCount = evtRes.count || evtList.length;
+        document.getElementById('heroEvtCount').textContent = upEvtCount || '0';
+        const evtEl = document.getElementById('eventsSection');
+
+        if(evtList.length === 0){
+            evtEl.innerHTML = '<div class="text-center py-16 text-white/20 bg-bd-card rounded-2xl border border-bd-border"><i data-lucide="calendar-x" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p class="text-lg">No events yet.</p><p class="text-sm mt-1">Events will appear here when added from admin panel.</p></div>';
+        } else {
+            // Featured event (first upcoming, or first one)
+            const featured = evtList.find(e => e.featured) || evtList.find(e => e.status === 'upcoming') || evtList[0];
+            const sideEvts = evtList.filter(e => e.id !== featured.id).slice(0, 3);
+
+            evtEl.innerHTML = `
+            <div class="space-y-4">
+                <!-- Featured Event -->
+                <div class="bg-bd-card rounded-2xl overflow-hidden card-hover border border-bd-border event-card-${featured.status}">
+                    <div class="flex flex-col lg:flex-row">
+                        <div class="lg:w-72 h-48 lg:h-auto relative flex-shrink-0 bg-gradient-to-br from-bd-green/10 to-bd-card">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <i data-lucide="${IC[featured.category]||'calendar'}" class="w-16 h-16 text-bd-green/20"></i>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-1">
+                            <div class="flex flex-wrap items-center gap-2 mb-3">
+                                ${featured.featured?'<span class="px-3 py-1 bg-bd-green/10 text-bd-green text-xs font-semibold rounded-full border border-bd-green/20">🔥 FEATURED</span>':''}
+                                <span class="px-3 py-1 bg-${CC[featured.category]||'purple'}-500/10 text-${CC[featured.category]||'purple'}-400 text-xs font-semibold rounded-full uppercase">${CT[featured.category]||featured.category}</span>
+                                <span class="px-3 py-1 status-${featured.status} text-xs font-semibold rounded-full uppercase">${featured.status}</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">${featured.title}</h3>
+                            <p class="text-white/40 text-sm mb-4 line-clamp-2">${featured.description||''}</p>
+                            <div class="flex flex-wrap gap-4 mb-5">
+                                <div class="flex items-center gap-2 text-sm text-white/40"><i data-lucide="calendar" class="w-4 h-4 text-bd-green"></i>${fmtDateRange(featured.date_start, featured.date_end)}</div>
+                                ${featured.time?`<div class="flex items-center gap-2 text-sm text-white/40"><i data-lucide="clock" class="w-4 h-4 text-bd-red"></i>${featured.time}</div>`:''}
+                                ${featured.prize?`<div class="flex items-center gap-2 text-sm text-white/40"><i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i>${featured.prize}</div>`:''}
+                                ${featured.max_participants?`<div class="flex items-center gap-2 text-sm text-white/40"><i data-lucide="users" class="w-4 h-4 text-blue-400"></i>${featured.participants||'0'}/${featured.max_participants} joined</div>`:''}
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <a href="${featured.registration_link || 'https://discord.gg/9MKhH4TC2Q'}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-bd-green hover:bg-bd-green/80 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all">${featured.status==='completed'?'View Details':'Register Now'}</a>
+                                <a href="events.html" class="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white/70 px-5 py-2.5 rounded-xl text-sm font-medium transition-all border border-bd-border">See All Events</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Side Events -->
+                ${sideEvts.map(e => {
+                    const col = CC[e.category]||'purple';
+                    return `<div class="bg-bd-card rounded-2xl p-5 card-hover border border-bd-border event-card-${e.status}">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                            <div class="w-16 h-16 bg-${col}-500/10 rounded-2xl flex flex-col items-center justify-center flex-shrink-0 border border-${col}-500/10">
+                                <span class="text-lg font-bold text-${col}-400">${new Date(e.date_start+'T00:00:00').getDate()}</span>
+                                <span class="text-[10px] text-${col}-400/60 uppercase font-semibold">${new Date(e.date_start+'T00:00:00').toLocaleDateString('en-US',{month:'short'})}</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex flex-wrap items-center gap-2 mb-1">
+                                    <span class="px-2.5 py-0.5 bg-${col}-500/10 text-${col}-400 text-[10px] font-semibold rounded-full uppercase">${CT[e.category]||e.category}</span>
+                                    <span class="px-2.5 py-0.5 status-${e.status} text-[10px] font-semibold rounded-full uppercase">${e.status}</span>
+                                </div>
+                                <h4 class="font-semibold text-base mb-1">${e.title}</h4>
+                                <p class="text-sm text-white/30 mt-1">${e.description||''}</p>
+                                <div class="flex flex-wrap gap-3 mt-2">
+                                    <span class="text-xs text-white/20 flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i>${fmtDateRange(e.date_start, e.date_end)}</span>
+                                    ${e.prize?`<span class="text-xs text-white/20 flex items-center gap-1"><i data-lucide="trophy" class="w-3 h-3 text-amber-500"></i>${e.prize}</span>`:''}
+                                </div>
+                            </div>
+                            <a href="${e.registration_link || 'https://discord.gg/9MKhH4TC2Q'}" target="_blank" rel="noopener noreferrer" class="flex-shrink-0 inline-flex items-center gap-1 bg-white/5 hover:bg-white/10 text-white/60 px-4 py-2 rounded-xl text-xs font-medium transition-all border border-bd-border">${e.status==='completed'?'View':'RSVP'} <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></a>
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>`;
+            lucide.createIcons();
+        }
+
+        // ===== RENDER YOUTUBERS (with YT icons) =====
         const ytList = ytRes.data || [];
         document.getElementById('heroYTCount').textContent = ytList.length || '0';
         const ytEl = document.getElementById('ytSection');
+
         if(ytList.length === 0){
-            ytEl.innerHTML = '<div class="w-full text-center py-12 text-white/20"><p class="text-lg">No YouTubers added yet.</p><a href="https://discord.gg/9MKhH4TC2Q" target="_blank" class="text-bd-green text-sm hover:underline mt-2 inline-block">Suggest one on Discord →</a></div>';
+            ytEl.innerHTML = '<div class="w-full text-center py-12 text-white/20"><p class="text-lg">No YouTububers added yet.</p><a href="https://discord.gg/9MKhH4TC2Q" target="_blank" class="text-bd-green text-sm hover:underline mt-2 inline-block">Suggest one on Discord →</a></div>';
         } else {
+            // Fetch all YouTube thumbnails in parallel
+            const thumbPromises = ytList.map(c => getYTThumb(c.youtube_link));
+            const thumbs = await Promise.all(thumbPromises);
+
             ytEl.innerHTML = ytList.map((c, i) => {
                 const col = CC[c.category] || 'red';
-                const seed = c.channel_name.replace(/\s/g,'').toLowerCase();
-                return `<div class="min-w-[280px] sm:min-w-[300px] bg-bd-card rounded-2xl p-6 card-hover border border-bd-border flex-shrink-0">
+                const thumb = thumbs[i];
+                return `<div class="min-w-[300px] bg-bd-card rounded-2xl p-6 card-hover border border-bd-border flex-shrink-0">
                     <div class="flex items-center gap-4 mb-4">
-                        <img src="${c.avatar_url || YT_IMG+seed+'/80/80.jpg'}" alt="${c.channel_name}" class="w-14 h-14 rounded-2xl object-cover border border-bd-border" loading="lazy" onerror="this.src='${YT_IMG+seed+'/80/80.jpg'}'">
+                        ${thumb
+                            ? `<img src="${thumb}" alt="${c.channel_name}" class="w-14 h-14 rounded-2xl object-cover border border-bd-border" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="w-14 h-14 rounded-2xl bg-${col}-500/10 border border-${col}-500/20 flex items-center justify-center text-${col}-400 font-bold text-xl">${c.channel_name.charAt(0)}</div>`
+                            : `<div class="w-14 h-14 rounded-2xl bg-${col}-500/10 border border-${col}-500/20 flex items-center justify-center text-${col}-400 font-bold text-xl">${c.channel_name.charAt(0)}</div>`
+                        }
                         <div>
                             <div class="flex items-center gap-2"><h4 class="font-semibold">${c.channel_name}</h4>${c.badge?`<span class="text-xs">${BL[c.badge]||''}</span>`:''}</div>
                             ${c.roblox_username?`<p class="text-xs text-white/30">${c.roblox_username}</p>`:''}
@@ -304,7 +406,7 @@ async function loadAll(){
         const newsList = newsRes.data || [];
         const newsEl = document.getElementById('newsSection');
         if(newsList.length === 0){
-            newsEl.innerHTML = '<div class="text-center py-16 text-white/20 bg-bd-card rounded-3xl border border-bd-border"><p class="text-lg">No news yet.</p><p class="text-sm mt-1">News will appear here when added from admin panel.</p></div>';
+            newsEl.innerHTML = '<div class="text-center py-16 text-white/20 bg-bd-card rounded-3xl border border-bd-border"><p class="text-lg">No news yet.</p><p class="text-sm mt-1">News appears here when added from admin panel.</p></div>';
         } else {
             const featured = newsList.find(n => n.featured) || newsList[0];
             const sideNews = newsList.filter(n => n.id !== featured.id).slice(0, 2);
@@ -320,23 +422,12 @@ async function loadAll(){
                         </div>
                     </div>
                     <div class="p-6 flex items-center justify-between border-t border-bd-border">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 bg-bd-green/20 rounded-full flex items-center justify-center"><i data-lucide="user" class="w-4 h-4 text-bd-green"></i></div>
-                            <div><p class="text-sm font-medium">Admin Team</p><p class="text-xs text-white/30">${fmtDate(featured.date)}</p></div>
-                        </div>
+                        <div class="flex items-center gap-3"><div class="w-8 h-8 bg-bd-green/20 rounded-full flex items-center justify-center"><i data-lucide="user" class="w-4 h-4 text-bd-green"></i></div><div><p class="text-sm font-medium">Admin Team</p><p class="text-xs text-white/30">${fmtDate(featured.date)}</p></div></div>
                         <a href="news.html" class="text-sm font-medium text-bd-green hover:text-bd-green/70 transition-colors">Read More →</a>
                     </div>
                 </div>
                 <div class="flex flex-col gap-6">
-                    ${sideNews.map(n => {
-                        const col = CC[n.category] || 'blue';
-                        return `<div class="bg-bd-card rounded-3xl p-6 card-hover border border-bd-border flex-1">
-                            <span class="inline-block px-3 py-1 bg-${col}-500/10 text-${col}-400 text-xs font-semibold rounded-full mb-3 uppercase">${n.category}</span>
-                            <h3 class="text-lg font-semibold mb-2 leading-snug">${n.title}</h3>
-                            <p class="text-sm text-white/40 mb-3 line-clamp-2">${n.summary}</p>
-                            <p class="text-xs text-white/20">${fmtDate(n.date)}</p>
-                        </div>`;
-                    }).join('')}
+                    ${sideNews.map(n => { const col=CC[n.category]||'blue'; return `<div class="bg-bd-card rounded-3xl p-6 card-hover border border-bd-border flex-1"><span class="inline-block px-3 py-1 bg-${col}-500/10 text-${col}-400 text-xs font-semibold rounded-full mb-3 uppercase">${n.category}</span><h3 class="text-lg font-semibold mb-2 leading-snug">${n.title}</h3><p class="text-sm text-white/40 mb-3 line-clamp-2">${n.summary}</p><p class="text-xs text-white/20">${fmtDate(n.date)}</p></div>`;}).join('')}
                 </div>
             </div>`;
             lucide.createIcons();
@@ -346,7 +437,7 @@ async function loadAll(){
         const updList = updRes.data || [];
         const updEl = document.getElementById('updatesSection');
         if(updList.length === 0){
-            updEl.innerHTML = '<div class="text-center py-16 text-white/20 bg-bd-card rounded-3xl border border-bd-border"><p class="text-lg">No updates yet.</p><p class="text-sm mt-1">Updates will appear here when added from admin panel.</p></div>';
+            updEl.innerHTML = '<div class="text-center py-16 text-white/20 bg-bd-card rounded-3xl border border-bd-border"><p class="text-lg">No updates yet.</p><p class="text-sm mt-1">Updates appear here when added from admin panel.</p></div>';
         } else {
             const showUpd = updList.slice(0, 4);
             updEl.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -366,11 +457,12 @@ async function loadAll(){
         }
 
     } catch(err) {
-        console.error('Supabase error:', err);
+        console.error('Database error:', err);
         document.getElementById('heroYTCount').textContent = '0';
-        document.getElementById('ytSection').innerHTML = '<div class="w-full text-center py-12 text-bd-red/60"><p>Could not load data from database.</p></div>';
-        document.getElementById('newsSection').innerHTML = '<div class="text-center py-12 text-bd-red/60 bg-bd-card rounded-3xl border border-bd-border"><p>Could not load news.</p></div>';
-        document.getElementById('updatesSection').innerHTML = '<div class="text-center py-12 text-bd-red/60 bg-bd-card rounded-3xl border border-bd-border"><p>Could not load updates.</p></div>';
+        document.getElementById('heroEvtCount').textContent = '0';
+        ['ytSection','newsSection','updatesSection','eventsSection'].forEach(id => {
+            document.getElementById(id).innerHTML = '<div class="text-center py-12 text-bd-red/60 bg-bd-card rounded-2xl border border-bd-border"><p>Could not load data.</p></div>';
+        });
     }
 }
 
