@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — Bangladesh Roblox Community</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter','ui-sans-serif','system-ui','sans-serif'] },
+                    colors: {
+                        bd: { green:'#006A4E', red:'#F42A41', dark:'#0A0A0A', card:'#141414', border:'#1F1F1F', hover:'#1A1A1A', muted:'#888', subtle:'#333' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html{scroll-behavior:smooth}body{background:#0A0A0A}
+        .gradient-text{background:linear-gradient(135deg,#006A4E,#F42A41);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .glass{background:rgba(255,255,255,.04);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06)}
+        .roblox-icon{filter:drop-shadow(0 0 8px rgba(0,106,78,.4))}
+        .tab-btn.active{background:#006A4E;color:white;border-color:#006A4E}
+        .card-hover{transition:all 300ms cubic-bezier(.4,0,.2,1)}
+        .card-hover:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+        @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+        .shake{animation:shake .4s ease-in-out}
+        @keyframes slideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+        .slide-in{animation:slideIn .3s ease-out}
+        .toast{animation:slideIn .3s ease-out}
+        input,textarea,select{background:#0A0A0A!important;border:1px solid #1F1F1F!important;color:white!important;outline:none!important;transition:border-color .2s!important}
+        input:focus,textarea:focus,select:focus{border-color:#006A4E!important;box-shadow:0 0 0 3px rgba(0,106,78,.15)!important}
+        input::placeholder,textarea::placeholder{color:#555!important}
+        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0A0A0A}::-webkit-scrollbar-thumb{background:#333;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#555}
+    </style>
+</head>
+<body class="font-sans text-white antialiased">
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-bd-green/5 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-bd-red/5 rounded-full blur-3xl"></div>
+        <div class="absolute inset-0 opacity-[0.02]" style="background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);background-size:60px 60px"></div>
+    </div>
+    <div class="relative z-10 w-full max-w-md">
+        <div class="text-center mb-8">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <img src="https://z-cdn-media.chatglm.cn/files/2502711f-3f62-422d-a717-3838b105ae96.png?auth_key=1882199017-c0d6a2ddf590473985f8527bbda07c1f-0-a4ebf0a452cbb70d7f5ad7e3910c33cb" alt="Logo" class="w-16 h-16 rounded-2xl object-cover border-2 border-bd-border">
+                <svg class="roblox-icon" width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M5.164 0L0 18.627 18.836 24 24 5.373 5.164 0z" fill="#006A4E"/><path d="M9.6 7.2l-3.6 14.4 8.4 2.1 3.6-14.4-8.4-2.1z" fill="#0A0A0A"/></svg>
+            </div>
+            <h1 class="text-2xl font-bold mb-1">Admin Panel</h1>
+            <p class="text-white/30 text-sm">Bangladesh Roblox Community</p>
+        </div>
+        <div id="loginBox" class="bg-bd-card rounded-2xl p-8 border border-bd-border">
+            <div id="loginError" class="hidden mb-4 p-3 bg-bd-red/10 border border-bd-red/20 rounded-xl text-bd-red text-sm text-center"></div>
+            <div class="mb-5">
+                <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Username</label>
+                <div class="relative">
+                    <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20"></i>
+                    <input id="loginUser" type="text" placeholder="Enter username" class="w-full pl-10 pr-4 py-3 rounded-xl text-sm" autocomplete="off">
+                </div>
+            </div>
+            <div class="mb-6">
+                <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Password</label>
+                <div class="relative">
+                    <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20"></i>
+                    <input id="loginPass" type="password" placeholder="Enter password" class="w-full pl-10 pr-4 py-3 rounded-xl text-sm" autocomplete="off">
+                    <button type="button" id="togglePass" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors"><i data-lucide="eye" class="w-4 h-4"></i></button>
+                </div>
+            </div>
+            <button id="loginBtn" class="w-full bg-bd-green hover:bg-bd-green/80 text-white py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2">
+                <i data-lucide="log-in" class="w-4 h-4"></i> Sign In
+            </button>
+            <div class="mt-4 text-center">
+                <a href="index.html" class="text-xs text-white/20 hover:text-bd-green transition-colors">← Back to website</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ ADMIN DASHBOARD ============ -->
+<div id="adminPanel" class="hidden">
+    <div class="max-w-[1400px] mx-auto p-2 sm:p-4 lg:p-6">
+
+        <!-- Top Bar -->
+        <div class="bg-bd-card rounded-2xl border border-bd-border px-4 lg:px-6 py-3 mb-6 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="https://z-cdn-media.chatglm.cn/files/2502711f-3f62-422d-a717-3838b105ae96.png?auth_key=1882199017-c0d6a2ddf590473985f8527bbda07c1f-0-a4ebf0a452cbb70d7f5ad7e3910c33cb" alt="Logo" class="w-9 h-9 rounded-xl object-cover">
+                <div>
+                    <span class="font-bold text-sm">Admin Panel</span>
+                    <span class="text-[10px] text-white/30 block">Bangladesh Roblox Community</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-bd-green/10 border border-bd-green/20 rounded-lg">
+                    <div class="w-2 h-2 bg-bd-green rounded-full"></div>
+                    <span class="text-xs text-bd-green font-medium">junaidkhan12</span>
+                </div>
+                <button id="logoutBtn" class="flex items-center gap-2 px-4 py-2 bg-bd-red/10 hover:bg-bd-red/20 text-bd-red text-sm font-medium rounded-xl transition-all border border-bd-red/10">
+                    <i data-lucide="log-out" class="w-4 h-4"></i><span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-bd-card rounded-2xl p-5 border border-bd-border">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-white/40 uppercase">Creators</span>
+                    <i data-lucide="users" class="w-4 h-4 text-bd-green"></i>
+                </div>
+                <p id="statCreators" class="text-2xl font-bold">0</p>
+            </div>
+            <div class="bg-bd-card rounded-2xl p-5 border border-bd-border">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-white/40 uppercase">News</span>
+                    <i data-lucide="newspaper" class="w-4 h-4 text-bd-red"></i>
+                </div>
+                <p id="statNews" class="text-2xl font-bold">0</p>
+            </div>
+            <div class="bg-bd-card rounded-2xl p-5 border border-bd-border">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-white/40 uppercase">Updates</span>
+                    <i data-lucide="refresh-cw" class="w-4 h-4 text-amber-400"></i>
+                </div>
+                <p id="statUpdates" class="text-2xl font-bold">0</p>
+            </div>
+            <div class="bg-bd-card rounded-2xl p-5 border border-bd-border">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-white/40 uppercase">Status</span>
+                    <i data-lucide="activity" class="w-4 h-4 text-green-400"></i>
+                </div>
+                <p class="text-2xl font-bold text-green-400">Live</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex flex-wrap gap-2 mb-6">
+            <button class="tab-btn active px-5 py-2.5 rounded-xl text-sm font-medium bg-transparent border border-bd-border text-white/50 hover:bg-bd-green hover:text-white hover:border-bd-green transition-all" data-tab="creators">
+                <span class="flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> Creators</span>
+            </button>
+            <button class="tab-btn px-5 py-2.5 rounded-xl text-sm font-medium bg-transparent border border-bd-border text-white/50 hover:bg-bd-green hover:text-white hover:border-bd-green transition-all" data-tab="news">
+                <span class="flex items-center gap-2"><i data-lucide="newspaper" class="w-4 h-4"></i> News</span>
+            </button>
+            <button class="tab-btn px-5 py-2.5 rounded-xl text-sm font-medium bg-transparent border border-bd-border text-white/50 hover:bg-bd-green hover:text-white hover:border-bd-green transition-all" data-tab="updates">
+                <span class="flex items-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Updates</span>
+            </button>
+        </div>
+
+        <!-- Toast Container -->
+        <div id="toastContainer" class="fixed top-6 right-6 z-[999] flex flex-col gap-2"></div>
+
+        <!-- ============ CREATORS TAB ============ -->
+        <div id="tab-creators" class="tab-content">
+            <!-- Add Creator Form -->
+            <div class="bg-bd-card rounded-2xl p-6 border border-bd-border mb-6">
+                <h3 class="font-semibold text-lg mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-bd-green"></i> Add New Creator</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Name *</label><input id="cName" type="text" placeholder="e.g. RafiGaming" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Username *</label><input id="cUsername" type="text" placeholder="e.g. @rafi_roblox" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Location</label><input id="cLocation" type="text" placeholder="e.g. Dhaka" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Category *</label>
+                        <select id="cCategory" class="w-full px-4 py-2.5 rounded-xl text-sm"><option value="developer">Developer</option><option value="builder">Builder</option><option value="designer">Designer</option><option value="scripter">Scripter</option><option value="animator">Animator</option></select>
+                    </div>
+                </div>
+                <div class="mb-4"><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Bio *</label><textarea id="cBio" rows="2" placeholder="Short description..." class="w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea></div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Visits</label><input id="cVisits" type="text" placeholder="e.g. 2M+" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Games/Projects</label><input id="cProjects" type="number" placeholder="e.g. 12" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Followers</label><input id="cFollowers" type="text" placeholder="e.g. 15K" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                </div>
+                <button id="addCreatorBtn" class="bg-bd-green hover:bg-bd-green/80 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Add Creator</button>
+            </div>
+            <!-- Creators List -->
+            <div id="creatorsList" class="space-y-3"></div>
+        </div>
+
+        <!-- ============ NEWS TAB ============ -->
+        <div id="tab-news" class="tab-content hidden">
+            <div class="bg-bd-card rounded-2xl p-6 border border-bd-border mb-6">
+                <h3 class="font-semibold text-lg mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-bd-red"></i> Add New News</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Title *</label><input id="nTitle" type="text" placeholder="News title..." class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Category *</label>
+                        <select id="nCategory" class="w-full px-4 py-2.5 rounded-xl text-sm"><option value="community">Community</option><option value="partnership">Partnership</option><option value="achievement">Achievement</option><option value="education">Education</option><option value="announcement">Announcement</option><option value="featured">Featured</option></select>
+                    </div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Date</label><input id="nDate" type="date" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                </div>
+                <div class="mb-4"><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Summary *</label><textarea id="nSummary" rows="2" placeholder="Brief summary..." class="w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea></div>
+                <div class="mb-4"><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Full Content</label><textarea id="nContent" rows="4" placeholder="Full article content (optional)..." class="w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea></div>
+                <button id="addNewsBtn" class="bg-bd-red hover:bg-bd-red/80 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Add News</button>
+            </div>
+            <div id="newsList" class="space-y-3"></div>
+        </div>
+
+        <!-- ============ UPDATES TAB ============ -->
+        <div id="tab-updates" class="tab-content hidden">
+            <div class="bg-bd-card rounded-2xl p-6 border border-bd-border mb-6">
+                <h3 class="font-semibold text-lg mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-amber-400"></i> Add New Update</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Title *</label><input id="uTitle" type="text" placeholder="Update title..." class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Category *</label>
+                        <select id="uCategory" class="w-full px-4 py-2.5 rounded-xl text-sm"><option value="server">Server</option><option value="events">Events</option><option value="community">Community</option><option value="resources">Resources</option><option value="features">Features</option><option value="bugfix">Bug Fix</option></select>
+                    </div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Date</label><input id="uDate" type="date" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                </div>
+                <div class="mb-4"><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Description *</label><textarea id="uDesc" rows="2" placeholder="What changed..." class="w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea></div>
+                <button id="addUpdateBtn" class="bg-amber-500 hover:bg-amber-600 text-black px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Add Update</button>
+            </div>
+            <div id="updatesList" class="space-y-3"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+lucide.createIcons();
+
+// ===== HELPERS =====
+const LS = {
+    get(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch{return d}},
+    set(k,v){localStorage.setItem(k,JSON.stringify(v))}
+};
+function genId(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5)}
+function toast(msg,type='success'){
+    const c=document.getElementById('toastContainer');
+    const colors={success:'border-bd-green/30 bg-bd-green/10 text-bd-green',error:'border-bd-red/30 bg-bd-red/10 text-bd-red',info:'border-blue-500/30 bg-blue-500/10 text-blue-400'};
+    const icons={success:'check-circle-2',error:'x-circle',info:'info'};
+    const el=document.createElement('div');
+    el.className=`toast flex items-center gap-3 px-5 py-3 rounded-xl border ${colors[type]} text-sm font-medium backdrop-blur-xl`;
+    el.innerHTML=`<i data-lucide="${icons[type]}" class="w-4 h-4 flex-shrink-0"></i><span>${msg}</span>`;
+    c.appendChild(el);lucide.createIcons();
+    setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(20px)';el.style.transition='all .3s';setTimeout(()=>el.remove(),300)},3000);
+}
+function formatDate(d){if(!d)return new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+const catColors={community:'blue',partnership:'green',achievement:'amber',education:'purple',announcement:'red',featured:'red',developer:'green',builder:'emerald',designer:'purple',scripter:'blue',animator:'amber',server:'amber',events:'purple',resources:'blue',features:'green',bugfix:'red'};
+
+// ===== LOGIN =====
+document.getElementById('togglePass').addEventListener('click',function(){
+    const p=document.getElementById('loginPass');
+    p.type=p.type==='password'?'text':'password';
+});
+document.getElementById('loginBtn').addEventListener('click',doLogin);
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+function doLogin(){
+    const u=document.getElementById('loginUser').value.trim();
+    const p=document.getElementById('loginPass').value;
+    const err=document.getElementById('loginError');
+    if(u==='junaidkhan12'&&p==='pass'){
+        sessionStorage.setItem('bdAdmin','1');
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('adminPanel').classList.remove('hidden');
+        initPanel();
+    }else{
+        err.textContent='Invalid username or password';
+        err.classList.remove('hidden');
+        document.getElementById('loginBox').classList.add('shake');
+        setTimeout(()=>document.getElementById('loginBox').classList.remove('shake'),400);
+    }
+}
+document.getElementById('logoutBtn').addEventListener('click',()=>{
+    sessionStorage.removeItem('bdAdmin');
+    document.getElementById('adminPanel').classList.add('hidden');
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('loginUser').value='';
+    document.getElementById('loginPass').value='';
+    document.getElementById('loginError').classList.add('hidden');
+});
+// Auto-login
+if(sessionStorage.getItem('bdAdmin')==='1'){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminPanel').classList.remove('hidden');
+    setTimeout(initPanel,50);
+}
+
+// ===== TABS =====
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click',function(){
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        this.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(c=>c.classList.add('hidden'));
+        document.getElementById('tab-'+this.dataset.tab).classList.remove('hidden');
+    });
+});
+
+// ===== INIT =====
+function initPanel(){updateStats();renderCreators();renderNews();renderUpdates()}
+function updateStats(){
+    document.getElementById('statCreators').textContent=LS.get('bd_creators',[]).length;
+    document.getElementById('statNews').textContent=LS.get('bd_news',[]).length;
+    document.getElementById('statUpdates').textContent=LS.get('bd_updates',[]).length;
+}
+
+// ===== CREATORS =====
+document.getElementById('addCreatorBtn').addEventListener('click',()=>{
+    const name=document.getElementById('cName').value.trim();
+    const username=document.getElementById('cUsername').value.trim();
+    const location=document.getElementById('cLocation').value.trim();
+    const category=document.getElementById('cCategory').value;
+    const bio=document.getElementById('cBio').value.trim();
+    const visits=document.getElementById('cVisits').value.trim();
+    const projects=document.getElementById('cProjects').value;
+    const followers=document.getElementById('cFollowers').value.trim();
+    if(!name||!username||!bio){toast('Please fill in all required fields','error');return}
+    const list=LS.get('bd_creators',[]);
+    list.push({id:genId(),name,username,location,category,bio,visits:visits||'0',projects:projects||'0',followers:followers||'0',date:new Date().toISOString()});
+    LS.set('bd_creators',list);
+    ['cName','cUsername','cLocation','cBio','cVisits','cFollowers'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('cProjects').value='';
+    renderCreators();updateStats();toast('Creator added successfully!');
+});
+function renderCreators(){
+    const list=LS.get('bd_creators',[]);
+    const el=document.getElementById('creatorsList');
+    if(!list.length){el.innerHTML='<div class="text-center py-12 text-white/20"><i data-lucide="users" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p>No creators yet. Add one above.</p></div>';lucide.createIcons();return}
+    el.innerHTML=list.map((c,i)=>`
+    <div class="bg-bd-card rounded-2xl p-5 border border-bd-border card-hover flex flex-col sm:flex-row sm:items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-${catColors[c.category]||'green'}-500/10 flex items-center justify-center flex-shrink-0 border border-${catColors[c.category]||'green'}-500/10">
+            <span class="text-lg font-bold text-${catColors[c.category]||'green'}-400">${c.name.charAt(0)}</span>
+        </div>
+        <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+                <h4 class="font-semibold">${c.name}</h4>
+                <span class="text-xs text-white/30">${c.username}</span>
+                <span class="px-2 py-0.5 bg-${catColors[c.category]||'green'}-500/10 text-${catColors[c.category]||'green'}-400 text-[10px] font-semibold rounded-full uppercase">${c.category}</span>
+            </div>
+            <p class="text-sm text-white/30 truncate">${c.bio}</p>
+            <div class="flex gap-4 mt-1.5 text-xs text-white/20">
+                ${c.visits?`<span>🎯 ${c.visits} visits</span>`:''}
+                ${c.projects?`<span>🎮 ${c.projects} projects</span>`:''}
+                ${c.followers?`<span>👥 ${c.followers} followers</span>`:''}
+                ${c.location?`<span>📍 ${c.location}</span>`:''}
+            </div>
+        </div>
+        <button onclick="deleteCreator('${c.id}')" class="flex-shrink-0 p-2.5 bg-bd-red/5 hover:bg-bd-red/15 text-bd-red/60 hover:text-bd-red rounded-xl transition-all border border-bd-red/10 hover:border-bd-red/20" title="Delete">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+    </div>`).join('');
+    lucide.createIcons();
+}
+function deleteCreator(id){
+    let list=LS.get('bd_creators',[]);
+    list=list.filter(c=>c.id!==id);
+    LS.set('bd_creators',list);
+    renderCreators();updateStats();toast('Creator removed','info');
+}
+
+// ===== NEWS =====
+document.getElementById('addNewsBtn').addEventListener('click',()=>{
+    const title=document.getElementById('nTitle').value.trim();
+    const category=document.getElementById('nCategory').value;
+    const date=document.getElementById('nDate').value;
+    const summary=document.getElementById('nSummary').value.trim();
+    const content=document.getElementById('nContent').value.trim();
+    if(!title||!summary){toast('Please fill in title and summary','error');return}
+    const list=LS.get('bd_news',[]);
+    list.unshift({id:genId(),title,category,date:date||new Date().toISOString().split('T')[0],summary,content,featured:list.length===0});
+    LS.set('bd_news',list);
+    ['nTitle','nSummary','nContent'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('nDate').value='';
+    renderNews();updateStats();toast('News added successfully!');
+});
+function renderNews(){
+    const list=LS.get('bd_news',[]);
+    const el=document.getElementById('newsList');
+    if(!list.length){el.innerHTML='<div class="text-center py-12 text-white/20"><i data-lucide="newspaper" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p>No news yet. Add one above.</p></div>';lucide.createIcons();return}
+    el.innerHTML=list.map(n=>`
+    <div class="bg-bd-card rounded-2xl p-5 border border-bd-border card-hover">
+        <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+            <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    ${n.featured?'<span class="px-2.5 py-0.5 bg-bd-red/10 text-bd-red text-[10px] font-semibold rounded-full">FEATURED</span>':''}
+                    <span class="px-2.5 py-0.5 bg-${catColors[n.category]||'blue'}-500/10 text-${catColors[n.category]||'blue'}-400 text-[10px] font-semibold rounded-full uppercase">${n.category}</span>
+                    <span class="text-xs text-white/20">${formatDate(n.date)}</span>
+                </div>
+                <h4 class="font-semibold text-lg mb-1">${n.title}</h4>
+                <p class="text-sm text-white/30">${n.summary}</p>
+                ${n.content?`<p class="text-xs text-white/15 mt-2 line-clamp-2">${n.content}</p>`:''}
+            </div>
+            <button onclick="deleteNews('${n.id}')" class="flex-shrink-0 p-2.5 bg-bd-red/5 hover:bg-bd-red/15 text-bd-red/60 hover:text-bd-red rounded-xl transition-all border border-bd-red/10 hover:border-bd-red/20" title="Delete">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </div>`).join('');
+    lucide.createIcons();
+}
+function deleteNews(id){
+    let list=LS.get('bd_news',[]);
+    list=list.filter(n=>n.id!==id);
+    LS.set('bd_news',list);
+    renderNews();updateStats();toast('News removed','info');
+}
+
+// ===== UPDATES =====
+document.getElementById('addUpdateBtn').addEventListener('click',()=>{
+    const title=document.getElementById('uTitle').value.trim();
+    const category=document.getElementById('uCategory').value;
+    const date=document.getElementById('uDate').value;
+    const desc=document.getElementById('uDesc').value.trim();
+    if(!title||!desc){toast('Please fill in title and description','error');return}
+    const list=LS.get('bd_updates',[]);
+    list.unshift({id:genId(),title,category,date:date||new Date().toISOString().split('T')[0],desc});
+    LS.set('bd_updates',list);
+    ['uTitle','uDesc'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('uDate').value='';
+    renderUpdates();updateStats();toast('Update added successfully!');
+});
+function renderUpdates(){
+    const list=LS.get('bd_updates',[]);
+    const el=document.getElementById('updatesList');
+    if(!list.length){el.innerHTML='<div class="text-center py-12 text-white/20"><i data-lucide="refresh-cw" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p>No updates yet. Add one above.</p></div>';lucide.createIcons();return}
+    el.innerHTML=list.map(u=>`
+    <div class="bg-bd-card rounded-2xl p-5 border border-bd-border card-hover">
+        <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+            <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <span class="px-2.5 py-0.5 bg-${catColors[u.category]||'amber'}-500/10 text-${catColors[u.category]||'amber'}-400 text-[10px] font-semibold rounded-full uppercase">${u.category}</span>
+                    <span class="text-xs text-white/20">${formatDate(u.date)}</span>
+                </div>
+                <h4 class="font-semibold mb-1">${u.title}</h4>
+                <p class="text-sm text-white/30">${u.desc}</p>
+            </div>
+            <button onclick="deleteUpdate('${u.id}')" class="flex-shrink-0 p-2.5 bg-bd-red/5 hover:bg-bd-red/15 text-bd-red/60 hover:text-bd-red rounded-xl transition-all border border-bd-red/10 hover:border-bd-red/20" title="Delete">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </div>`).join('');
+    lucide.createIcons();
+}
+function deleteUpdate(id){
+    let list=LS.get('bd_updates',[]);
+    list=list.filter(u=>u.id!==id);
+    LS.set('bd_updates',list);
+    renderUpdates();updateStats();toast('Update removed','info');
+}
+</script>
+</body>
+</html>
