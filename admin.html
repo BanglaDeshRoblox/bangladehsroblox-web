@@ -9,16 +9,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','ui-sans-serif','system-ui','sans-serif']},colors:{bd:{green:'#006A4E',red:'#F42A41',dark:'#0A0A0A',card:'#141414',border:'#1F1F1F',hover:'#1A1A1A',muted:'#888',subtle:'#333'}}}}}
-    </script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','ui-sans-serif','system-ui','sans-serif']},colors:{bd:{green:'#006A4E',red:'#F42A41',dark:'#0A0A0A',card:'#141414',border:'#1F1F1F',hover:'#1A1A1A',muted:'#888',subtle:'#333'}}}}}</script>
     <style>
         html{scroll-behavior:smooth}body{background:#0A0A0A}
         .gradient-text{background:linear-gradient(135deg,#006A4E,#F42A41);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
         .roblox-icon{filter:drop-shadow(0 0 8px rgba(0,106,78,.4))}
         .tab-btn.active{background:#006A4E;color:white;border-color:#006A4E}
-        .card-hover{transition:all 300ms cubic-bezier(.4,0,.2,1)}
-        .card-hover:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+        .card-hover{transition:all 300ms cubic-bezier(.4,0,.2,1)}.card-hover:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
         @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}.shake{animation:shake .4s ease-in-out}
         @keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
         @keyframes fadeOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(30px)}}
@@ -30,6 +27,11 @@
         .loading-spinner{border:2px solid #1F1F1F;border-top:2px solid #006A4E;border-radius:50%;width:16px;height:16px;animation:spin .6s linear infinite;display:inline-block}
         @keyframes spin{to{transform:rotate(360deg)}}
         .edit-mode{border-color:#006A4E!important;box-shadow:0 0 0 1px rgba(0,106,78,.2)!important}
+        .logo-preview{width:120px;height:120px;border-radius:1.5rem;object-fit:contain;background:#1F1F1F;border:2px dashed #333;padding:8px;cursor:pointer;transition:all .2s}
+        .logo-preview:hover{border-color:#006A4A;border-style:solid}
+        .upload-area{border:2px dashed #333;border-radius:1rem;padding:2rem;text-align:center;transition:all .2s;cursor:pointer}
+        .upload-area:hover,.upload-area.dragover{border-color:#006A4E;background:rgba(0,106,78,.03)}
+        .upload-area.dragover{border-color:#006A4E;background:rgba(0,106,78,.05)}
     </style>
 </head>
 <body class="font-sans text-white antialiased">
@@ -44,7 +46,9 @@
     <div class="relative z-10 w-full max-w-md">
         <div class="text-center mb-8">
             <div class="flex items-center justify-center gap-3 mb-4">
-                <img src="https://z-cdn-media.chatglm.cn/files/2502711f-3f62-422d-a717-3838b105ae96.png?auth_key=1882199017-c0d6a2ddf590473985f8527bbda07c1f-0-a4ebf0a452cbb70d7f5ad7e3910c33cb" alt="Logo" class="w-16 h-16 rounded-2xl object-cover border-2 border-bd-border">
+                <div id="loginLogo" class="w-16 h-16 rounded-2xl bg-bd-card border border-bd-border flex items-center justify-center">
+                    <span class="text-2xl font-bold gradient-text">BD</span>
+                </div>
                 <svg class="roblox-icon" width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M5.164 0L0 18.627 18.836 24 24 5.373 5.164 0z" fill="#006A4E"/><path d="M9.6 7.2l-3.6 14.4 8.4 2.1 3.6-14.4-8.4-2.1z" fill="#0A0A0A"/></svg>
             </div>
             <h1 class="text-2xl font-bold mb-1">Admin Panel</h1>
@@ -54,22 +58,13 @@
             <div id="loginError" class="hidden mb-4 p-3 bg-bd-red/10 border border-bd-red/20 rounded-xl text-bd-red text-sm text-center"></div>
             <div class="mb-5">
                 <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Email</label>
-                <div class="relative">
-                    <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20"></i>
-                    <input id="loginUser" type="email" placeholder="Enter your email" class="w-full pl-10 pr-4 py-3 rounded-xl text-sm" autocomplete="off">
-                </div>
+                <div class="relative"><i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20"></i><input id="loginUser" type="email" placeholder="Enter your email" class="w-full pl-10 pr-4 py-3 rounded-xl text-sm" autocomplete="off"></div>
             </div>
             <div class="mb-6">
                 <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Password</label>
-                <div class="relative">
-                    <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20"></i>
-                    <input id="loginPass" type="password" placeholder="Enter password" class="w-full pl-10 pr-10 py-3 rounded-xl text-sm" autocomplete="off">
-                    <button type="button" id="togglePass" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors"><i data-lucide="eye" class="w-4 h-4"></i></button>
-                </div>
+                <div class="relative"><i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20"></i><input id="loginPass" type="password" placeholder="Enter password" class="w-full pl-10 pr-10 py-3 rounded-xl text-sm" autocomplete="off"><button type="button" id="togglePass" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors"><i data-lucide="eye" class="w-4 h-4"></i></button></div>
             </div>
-            <button id="loginBtn" class="w-full bg-bd-green hover:bg-bd-green/80 text-white py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2">
-                <i data-lucide="log-in" class="w-4 h-4"></i> Sign In
-            </button>
+            <button id="loginBtn" class="w-full bg-bd-green hover:bg-bd-green/80 text-white py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2"><i data-lucide="log-in" class="w-4 h-4"></i> Sign In</button>
             <div class="mt-4 text-center"><a href="index.html" class="text-xs text-white/20 hover:text-bd-green transition-colors">← Back to website</a></div>
         </div>
     </div>
@@ -82,7 +77,7 @@
     <!-- Top Bar -->
     <div class="bg-bd-card rounded-2xl border border-bd-border px-4 lg:px-6 py-3 mb-6 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <img src="https://z-cdn-media.chatglm.cn/files/2502711f-3f62-422d-a717-3838b105ae96.png?auth_key=1882199017-c0d6a2ddf590473985f8527bbda07c1f-0-a4ebf0a452cbb70d7f5ad7e3910c33cb" alt="Logo" class="w-9 h-9 rounded-xl object-cover">
+            <div id="topLogo" class="w-9 h-9 rounded-xl bg-bd-card border border-bd-border flex items-center justify-center text-sm font-bold gradient-text">BD</div>
             <div><span class="font-bold text-sm">Admin Panel</span><span class="text-[10px] text-white/30 block">Bangladesh Roblox Community</span></div>
         </div>
         <div class="flex items-center gap-3">
@@ -90,9 +85,7 @@
                 <div class="w-2 h-2 bg-bd-green rounded-full animate-pulse"></div>
                 <span class="text-xs text-bd-green font-medium truncate max-w-[180px]">muntasirjunayed64@gmail.com</span>
             </div>
-            <button id="logoutBtn" class="flex items-center gap-2 px-4 py-2 bg-bd-red/10 hover:bg-bd-red/20 text-bd-red text-sm font-medium rounded-xl transition-all border border-bd-red/10">
-                <i data-lucide="log-out" class="w-4 h-4"></i><span class="hidden sm:inline">Logout</span>
-            </button>
+            <button id="logoutBtn" class="flex items-center gap-2 px-4 py-2 bg-bd-red/10 hover:bg-bd-red/20 text-bd-red text-sm font-medium rounded-xl transition-all border border-bd-red/10"><i data-lucide="log-out" class="w-4 h-4"></i><span class="hidden sm:inline">Logout</span></button>
         </div>
     </div>
 
@@ -100,30 +93,21 @@
     <div id="dbStatus" class="mb-6 flex items-center gap-2 text-xs px-4 py-2 rounded-xl border border-bd-border bg-bd-card text-white/30">Connecting...</div>
 
     <!-- Stats -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="bg-bd-card rounded-2xl p-5 border border-bd-border">
-            <div class="flex items-center justify-between mb-2"><span class="text-xs font-semibold text-white/40 uppercase">YouTubers</span><i data-lucide="youtube" class="w-4 h-4 text-red-400"></i></div>
-            <p id="statCreators" class="text-2xl font-bold">—</p><p class="text-[10px] text-white/20 mt-1">Roblox YouTubers</p>
-        </div>
-        <div class="bg-bd-card rounded-2xl p-5 border border-bd-border">
-            <div class="flex items-center justify-between mb-2"><span class="text-xs font-semibold text-white/40 uppercase">News</span><i data-lucide="newspaper" class="w-4 h-4 text-bd-red"></i></div>
-            <p id="statNews" class="text-2xl font-bold">—</p><p class="text-[10px] text-white/20 mt-1">Articles</p>
-        </div>
-        <div class="bg-bd-card rounded-2xl p-5 border border-bd-border">
-            <div class="flex items-center justify-between mb-2"><span class="text-xs font-semibold text-white/40 uppercase">Updates</span><i data-lucide="refresh-cw" class="w-4 h-4 text-amber-400"></i></div>
-            <p id="statUpdates" class="text-2xl font-bold">—</p><p class="text-[10px] text-white/20 mt-1">Changelog</p>
-        </div>
-        <div class="bg-bd-card rounded-2xl p-5 border border-bd-border">
-            <div class="flex items-center justify-between mb-2"><span class="text-xs font-semibold text-white/40 uppercase">Database</span><i data-lucide="database" class="w-4 h-4 text-blue-400"></i></div>
-            <p class="text-2xl font-bold text-blue-400">Supabase</p><p class="text-[10px] text-white/20 mt-1">Cloud</p>
-        </div>
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <div class="bg-bd-card rounded-2xl p-5 border border-bd-border"><div class="flex items-center justify-between mb-2"><span class="text-xs font-semibold text-white/40 uppercase">YouTubers</span><i data-lucide="youtube" class="w-4 h-4 text-red-400"></i></div><p id="statCreators" class="text-2xl font-bold">—</p></div>
+        <div class="bg-bd-card rounded-2xl p-5 border border-bd-border"><div class="flex items-center justify-between mb-2"><span class="text-xs font-semibold text-white/40 uppercase">Events</span><i data-lucide="calendar-days" class="w-4 h-4 text-purple-400"></i></div><p id="statEvents" class="text-2xl font-bold">—</p></div>
+        <div class="bg-bd-card rounded-2xl p-5 border border-bd-border"><div class="flex items-center justify-between mb-2"><span class="text-xs font-semibold text-white/40 uppercase">News</span><i data-lucide="newspaper" class="w-4 h-4 text-bd-red"></i></div><p id="statNews" class="text-2xl font-bold">—</p></div>
+        <div class="bg-bd-card rounded-2xl p-5 border border-bd-border"><div class="flex items-center justify-between mb-2"><span class="text-xs font-semibold text-white/40 uppercase">Updates</span><i data-lucide="refresh-cw" class="w-4 h-4 text-amber-400"></i></div><p id="statUpdates" class="text-2xl font-bold">—</p></div>
+        <div class="bg-bd-card rounded-2xl p-5 border border-bd-border"><div class="flex items-center justify-between mb-2"><span class="text-xs font-semibold text-white/40 uppercase">Database</span><i data-lucide="database" class="w-4 h-4 text-blue-400"></i></div><p class="text-2xl font-bold text-blue-400">Supabase</p></div>
     </div>
 
     <!-- Tabs -->
     <div class="flex flex-wrap gap-2 mb-6">
-        <button class="tab-btn active px-5 py-2.5 rounded-xl text-sm font-medium bg-transparent border border-bd-border text-white/50 transition-all" data-tab="youtubers"><span class="flex items-center gap-2"><i data-lucide="youtube" class="w-4 h-4"></i> Roblox YouTubers</span></button>
+        <button class="tab-btn active px-5 py-2.5 rounded-xl text-sm font-medium bg-transparent border border-bd-border text-white/50 transition-all" data-tab="youtubers"><span class="flex items-center gap-2"><i data-lucide="youtube" class="w-4 h-4"></i> YouTubers</span></button>
+        <button class="tab-btn px-5 py-2.5 rounded-xl text-sm font-medium bg-transparent border border-bd-border text-white/50 transition-all" data-tab="events"><span class="flex items-center gap-2"><i data-lucide="calendar-days" class="w-4 h-4"></i> Events</span></button>
         <button class="tab-btn px-5 py-2.5 rounded-xl text-sm font-medium bg-transparent border border-bd-border text-white/50 transition-all" data-tab="news"><span class="flex items-center gap-2"><i data-lucide="newspaper" class="w-4 h-4"></i> News</span></button>
         <button class="tab-btn px-5 py-2.5 rounded-xl text-sm font-medium bg-transparent border border-bd-border text-white/50 transition-all" data-tab="updates"><span class="flex items-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Updates</span></button>
+        <button class="tab-btn px-5 py-2.5 rounded-xl text-sm font-medium bg-transparent border border-bd-border text-white/50 transition-all" data-tab="settings"><span class="flex items-center gap-2"><i data-lucide="settings" class="w-4 h-4"></i> Settings</span></button>
     </div>
 
     <!-- Toast -->
@@ -132,61 +116,76 @@
     <!-- ===== YOUTUBERS TAB ===== -->
     <div id="tab-youtubers" class="tab-content">
         <div id="ytForm" class="bg-bd-card rounded-2xl p-6 border border-bd-border mb-6">
-            <div class="flex items-center justify-between mb-1">
-                <h3 class="font-semibold text-lg flex items-center gap-2" id="ytFormTitle"><i data-lucide="plus-circle" class="w-5 h-5 text-bd-green"></i> Add Roblox YouTuber</h3>
-                <button id="ytCancelEdit" class="hidden px-3 py-1.5 text-xs font-medium text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-bd-border">✕ Cancel Edit</button>
+            <div class="flex items-center justify-between mb-1"><h3 class="font-semibold text-lg flex items-center gap-2" id="ytFormTitle"><i data-lucide="plus-circle" class="w-5 h-5 text-bd-green"></i> Add Roblox YouTuber</h3>
+                <button id="ytCancelEdit" class="hidden px-3 py-1.5 text-xs font-medium text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-bd-border">✕ Cancel</button>
             </div>
-            <p class="text-xs text-white/30 mb-4" id="ytFormDesc">Add a Bangladeshi YouTuber who creates Roblox content.</p>
             <input type="hidden" id="ytEditId" value="">
-
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                 <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Channel Name *</label><input id="ytChannel" type="text" placeholder="e.g. RafiGaming" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
                 <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Roblox Username</label><input id="ytRoblox" type="text" placeholder="e.g. @rafi_roblox" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
                 <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Location</label><input id="ytLocation" type="text" placeholder="e.g. Dhaka" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
             </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                 <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Content Type *</label>
-                    <select id="ytCategory" class="w-full px-4 py-2.5 rounded-xl text-sm">
-                        <option value="gameplay">Gameplay</option>
-                        <option value="tutorials">Tutorials</option>
-                        <option value="reviews">Game Reviews</option>
-                        <option value="building">Building Guides</option>
-                        <option value="scripting">Scripting Tutorials</option>
-                        <option value="edits">Edits / Montages</option>
-                        <option value="challenges">Challenges</option>
-                        <option value="news">Roblox News</option>
-                        <option value="vlogs">Vlogs</option>
-                    </select>
+                    <select id="ytCategory" class="w-full px-4 py-2.5 rounded-xl text-sm"><option value="gameplay">Gameplay</option value="tutorials">Tutorials</option><option value="reviews">Game Reviews</option><option value="building">Building Guides</option><option value="scripting">Scripting Tutorials</option><option value="edits">Edits / Montages</option><option value="challenges">Challenges</option><option value="news">Roblox News</option><option value="vlogs">Vlogs</option></select>
                 </div>
                 <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Subscribers</label><input id="ytSubs" type="text" placeholder="e.g. 15K" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
                 <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Total Videos</label><input id="ytVideos" type="text" placeholder="e.g. 250" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
             </div>
-
             <div class="mb-4"><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">YouTube Link</label><input id="ytLink" type="url" placeholder="https://youtube.com/@channel" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
-            <div class="mb-4"><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Bio * <span class="normal-case text-white/20">(What Roblox content they make)</span></label><textarea id="ytBio" rows="2" placeholder="e.g. Makes daily Roblox gameplay videos, obby challenges, and tier list videos in Bengali." class="w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea></div>
-
+            <div class="mb-4"><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Bio * <span class="normal-case text-white/20">(What Roblox content they make)</span></label><textarea id="ytBio" rows="2" placeholder="e.g. Makes daily Roblox gameplay videos in Bengali." class="w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea></div>
             <div class="flex flex-wrap items-center gap-4 mb-4">
                 <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Badge</label>
                     <select id="ytBadge" class="w-full px-4 py-2.5 rounded-xl text-sm"><option value="">None</option><option value="top">⭐ Top YouTuber</option><option value="rising">🚀 Rising Star</option><option value="verified">✅ Verified Creator</option></select>
                 </div>
             </div>
-
-            <div class="flex gap-3">
-                <button id="ytSaveBtn" class="bg-bd-green hover:bg-bd-green/80 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
-                    <span class="loading-spinner hidden" id="ytSpinner"></span><i data-lucide="plus" class="w-4 h-4" id="ytBtnIcon"></i><span id="ytBtnText">Add YouTuber</span>
-                </button>
-            </div>
+            <button id="ytSaveBtn" class="bg-bd-green hover:bg-bd-green/80 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+                <span class="loading-spinner hidden" id="ytSpinner"></span><i data-lucide="plus" class="w-4 h-4" id="ytBtnIcon"></i><span id="ytBtnText">Add YouTuber</span>
+            </button>
         </div>
         <div id="ytList" class="space-y-3"></div>
+    </div>
+
+    <!-- ===== EVENTS TAB ===== -->
+    <div id="tab-events" class="tab-content hidden">
+        <div id="evtForm" class="bg-bd-card rounded-2xl p-6 border border-bd-border mb-6">
+            <div class="flex items-center justify-between mb-1"><h3 class="font-semibold text-lg flex items-center gap-2" id="evtFormTitle"><i data-lucide="plus-circle" class="w-5 h-5 text-purple-400"></i> Add Event</h3>
+                <button id="evtCancelEdit" class="hidden px-3 py-1.5 text-xs font-medium text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-bd-border">✕ Cancel</button>
+            </div>
+            <input type="hidden" id="evtEditId" value="">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Event Title *</label><input id="evtTitle" type="text" placeholder="e.g. Winter Game Jam 2024" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Category *</label>
+                    <select id="evtCategory" class="w-full px-4 py-2.5 rounded-xl text-sm"><option value="gamejam">Game Jam</option><option value="workshop">Workshop</option><option value="contest">Contest</option><option value="meetup">Meetup</option><option value="tournament">Tournament</option><option value="special">Special Event</option></select>
+                </div>
+                <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Status</label>
+                    <select id="evtStatus" class="w-full px-4 py-2.5 rounded-xl text-sm"><option value="upcoming">Upcoming</option><option value="ongoing">Ongoing</option><option value="completed">Completed</option></select>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Start Date *</label><input id="evtStart" type="date" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">End Date</label><input id="evtEnd" type="date" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Time</label><input id="evtTime" type="text" placeholder="e.g. 7:00 PM BDT" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Prize</label><input id="evtPrize" type="text" placeholder="e.g. ৳50,000" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Max Participants</label><input id="evtMaxP" type="number" placeholder="e.g. 120" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Registration Link</label><input id="evtLink" type="url" placeholder="https://discord.gg/..." class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+            </div>
+            <div class="mb-4"><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Description</label><textarea id="evtDesc" rows="2" placeholder="Event details..." class="w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea></div>
+            <div class="flex items-center gap-4 mb-4"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="evtFeatured" class="w-4 h-4 rounded accent-bd-green"><span class="text-sm text-white/50">Mark as Featured</span></label></div>
+            <button id="evtSaveBtn" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2">
+                <span class="loading-spinner hidden" id="evtSpinner"></span><i data-lucide="plus" class="w-4 h-4" id="evtBtnIcon"></i><span id="evtBtnText">Add Event</span>
+            </button>
+        </div>
+        <div id="evtList" class="space-y-3"></div>
     </div>
 
     <!-- ===== NEWS TAB ===== -->
     <div id="tab-news" class="tab-content hidden">
         <div id="newsForm" class="bg-bd-card rounded-2xl p-6 border border-bd-border mb-6">
-            <div class="flex items-center justify-between mb-1">
-                <h3 class="font-semibold text-lg flex items-center gap-2" id="newsFormTitle"><i data-lucide="plus-circle" class="w-5 h-5 text-bd-red"></i> Add News</h3>
-                <button id="newsCancelEdit" class="hidden px-3 py-1.5 text-xs font-medium text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-bd-border">✕ Cancel Edit</button>
+            <div class="flex items-center justify-between mb-1"><h3 class="font-semibold text-lg flex items-center gap-2" id="newsFormTitle"><i data-lucide="plus-circle" class="w-5 h-5 text-bd-red"></i> Add News</h3>
+                <button id="newsCancelEdit" class="hidden px-3 py-1.5 text-xs font-medium text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-bd-border">✕ Cancel</button>
             </div>
             <input type="hidden" id="newsEditId" value="">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
@@ -209,9 +208,8 @@
     <!-- ===== UPDATES TAB ===== -->
     <div id="tab-updates" class="tab-content hidden">
         <div id="updForm" class="bg-bd-card rounded-2xl p-6 border border-bd-border mb-6">
-            <div class="flex items-center justify-between mb-1">
-                <h3 class="font-semibold text-lg flex items-center gap-2" id="updFormTitle"><i data-lucide="plus-circle" class="w-5 h-5 text-amber-400"></i> Add Update</h3>
-                <button id="updCancelEdit" class="hidden px-3 py-1.5 text-xs font-medium text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-bd-border">✕ Cancel Edit</button>
+            <div class="flex items-center justify-between mb-1"><h3 class="font-semibold text-lg flex items-center gap-2" id="updFormTitle"><i data-lucide="plus-circle" class="w-5 h-5 text-amber-400"></i> Add Update</h3>
+                <button id="updCancelEdit" class="hidden px-3 py-1.5 text-xs font-medium text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-bd-border">✕ Cancel</button>
             </div>
             <input type="hidden" id="updEditId" value="">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
@@ -229,15 +227,65 @@
         <div id="updList" class="space-y-3"></div>
     </div>
 
+    <!-- ===== SETTINGS TAB ===== -->
+    <div id="tab-settings" class="tab-content hidden">
+        <div class="bg-bd-card rounded-2xl p-6 lg:p-8 border border-bd-border mb-6">
+            <h3 class="font-semibold text-lg flex items-center gap-2 mb-6"><i data-lucide="settings" class="w-5 h-5 text-blue-400"></i> Site Settings</h3>
+
+            <!-- LOGO UPLOAD -->
+            <div class="bg-bd-dark rounded-2xl p-6 border border-bd-border mb-6">
+                <h4 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4">Community Logo</h4>
+                <div class="flex flex flex-col sm:flex-row items-start gap-6">
+                    <div>
+                        <label for="logoUpload" class="upload-area w-full sm:w-64 h-40 flex flex-col items-center justify-center" id="uploadArea">
+                            <img id="logoPreview" src="" alt="Logo preview" class="logo-preview hidden">
+                            <div id="logoPlaceholder" class="flex flex-col items-center justify-center text-white/20">
+                                <svg class="w-12 h-12 mb-2" viewBox="0 0 24 24" fill="none"><path d="M5.164 0L0 18.627 18.836 24 24 5.373 5.164 0z" fill="rgba(255,255,255,.1)"/><path d="M9.6 7.2l-3.6 14.4 8.4 2.1 3.6-14.4-8.4-2.1z" fill="rgba(255,255,255,.05)"/></svg>
+                                <span class="text-xs">Click to upload</span>
+                            </div>
+                        </label>
+                        <input type="file" id="logoUpload" accept="image/*" class="hidden">
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm text-white/50 mb-3">Upload your community logo. Recommended: PNG, 512x512px, transparent background.</p>
+                        <button id="saveLogoBtn" class="bg-bd-green hover:bg-bd-green/80 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+                            <span class="loading-spinner hidden" id="logoSpinner"></span>
+                            <i data-lucide="upload" class="w-4 h-4" id="logoBtnIcon"></i>
+                            <span id="logoBtnText">Upload Logo</span>
+                        </button>
+                        <button id="removeLogoBtn" class="text-xs text-white/30 hover:text-bd-red transition-colors underline mt-2" id="removeLogoBtn">Remove logo</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SITE INFO -->
+            <div class="bg-bd-dark rounded-2xl p-6 border border-bd-border">
+                <h4 class="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4">Site Information</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Site Name</label><input id="siteName" type="text" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Tagline</label><input id="siteDesc" type="text" placeholder="Short description" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                </div>
+                <button id="saveSiteBtn" class="bg-bd-green hover:bg-bd-green/80 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+                    <span class="loading-spinner hidden" id="siteSpinner"></span>
+                    <i data-lucide="save" class="w-4 h-4" id="siteBtnIcon"></i>
+                    <span id="siteBtnText">Save Settings</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 </div>
 
 <script>
 lucide.createIcons();
 
-const sb=window.supabase.createClient('https://xfvzjdxucijqsijicati.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmdnpqZHh1Y2lqcXNpamljYXRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxOTI4ODgsImV4cCI6MjA5Nzc2ODg4OH0.w0Pf64wjp0hlP2tIVl2ijJAepy8pszYiyzFx4uGeXAM');
+const sb = window.supabase.createClient(
+    'https://xfvzjdxucijqsijicati.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmdnpqZHh1Y2lqcXNpamljYXRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxOTI4ODgsImV4cCI6MjA5Nzc2ODg4OH0.w0Pf64wjp0hlP2tIVl2ijJAepy8pszYiyzFx4uGeXAM'
+);
 
 const ADMIN_EMAIL='muntasirjunayed64@gmail.com',ADMIN_PASS='01866922683mmj';
+const LOGO_BUCKET='logos';
 
 function toast(msg,type='success'){
     const c=document.getElementById('toastContainer');
@@ -249,12 +297,14 @@ function toast(msg,type='success'){
     c.appendChild(el);lucide.createIcons();
     setTimeout(()=>{el.classList.replace('toast-in','toast-out');setTimeout(()=>el.remove(),300)},3500);
 }
-function fmtDate(d){if(!d)return new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});return new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
-function setDb(ok,msg){const el=document.getElementById('dbStatus');if(ok){el.className='mb-6 flex items-center gap-2 text-xs px-4 py-2 rounded-xl border border-bd-green/20 bg-bd-green/5 text-bd-green';el.innerHTML=`<div class="w-2 h-2 bg-bd-green rounded-full"></div>${msg||'Connected to Supabase ✓'}`;}else{el.className='mb-6 flex items-center gap-2 text-xs px-4 py-2 rounded-xl border border-bd-red/20 bg-bd-red/5 text-bd-red';el.innerHTML=`<div class="w-2 h-2 bg-bd-red rounded-full"></div>${msg||'Failed'}`;}}
-function setLoad(prefix,on){const s=document.getElementById(prefix+'Spinner'),i=document.getElementById(prefix+'BtnIcon'),b=document.getElementById(prefix+'SaveBtn');if(on){s&&s.classList.remove('hidden');i&&i.classList.add('hidden');b&&b.setAttribute('disabled','true');}else{s&&s.classList.add('hidden');i&&i.classList.remove('hidden');b&&b.removeAttribute('disabled');}}
-const cc={community:'blue',partnership:'green',achievement:'amber',education:'purple',announcement:'red',featured:'red',gameplay:'red',tutorials:'blue',reviews:'amber',building:'emerald',scripting:'purple',edits:'pink',challenges:'orange',news:'blue',vlogs:'cyan',server:'amber',events:'purple',resources:'blue',features:'green',bugfix:'red'};
-const bl={top:'⭐ Top YouTuber',rising:'🚀 Rising Star',verified:'✅ Verified Creator'};
-const ct={gameplay:'Gameplay',tutorials:'Tutorials',reviews:'Game Reviews',building:'Building Guides',scripting:'Scripting',edits:'Edits/Montages',challenges:'Challenges',news:'Roblox News',vlogs:'Vlogs'};
+function fmtDate(d){if(!d)return'';return new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+function fmtDateRange(s,e){if(!s)return'';let r=fmtDate(s);if(e&&e!==s)r+=' – '+fmtDate(e);return r}
+function setLoad(prefix,on){const s=document.getElementById(prefix+'Spinner'),i=document.getElementById(prefix+'BtnIcon'),b=document.getElementById(prefix+'SaveBtn')||document.getElementById(prefix+'Btn');if(on){s&&s.classList.remove('hidden');i&&i.classList.add('hidden');b&&b.setAttribute('disabled','true');}else{s&&s.classList.add('hidden');i&&i.classList.remove('hidden');b&&b.removeAttribute('disabled');}}
+const CC={community:'blue',partnership:'green',achievement:'amber',education:'purple',announcement:'red',featured:'red',gameplay:'red',tutorials:'blue',reviews:'amber',building:'emerald',scripting:'purple',edits:'pink',challenges:'orange',news:'blue',vlogs:'cyan',server:'amber',events:'purple',resources:'blue',features:'green',bugfix:'red',gamejam:'green',workshop:'blue',contest:'amber',meetup:'emerald',tournament:'blue'};
+const CT={gameplay:'Gameplay',tutorials:'Tutorials',reviews:'Reviews',building:'Building',scripting:'Scripting',edits:'Edits',challenges:'Challenges',news:'Roblox News',vlogs:'Vlogs',gamejam:'Game Jam',workshop:'Workshop',contest:'Contest',meetup:'Meetup',tournament:'Tournament'};
+const BL={top:'⭐ Top',rising:'🚀 Rising',verified:'✅ Verified'};
+const IC={server:'shield-check',events:'gamepad-2',community:'users',resources:'book-open',features:'sparkles',bugfix:'bug',gamejam:'trophy',workshop:'book-open',contest:'swords',meetup:'map-pin',tournament:'trophy'};
+const YT_IMG='https://picsum.photos/seed/yt/80/80.jpg';
 
 // LOGIN
 document.getElementById('togglePass').addEventListener('click',function(){const p=document.getElementById('loginPass'),ic=this.querySelector('i');if(p.type==='password'){p.type='text';ic.setAttribute('data-lucide','eye-off')}else{p.type='password';ic.setAttribute('data-lucide','eye')}lucide.createIcons()});
@@ -268,140 +318,184 @@ if(sessionStorage.getItem('bdAdmin')==='1'){document.getElementById('loginScreen
 document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',function(){document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));this.classList.add('active');document.querySelectorAll('.tab-content').forEach(x=>x.classList.add('hidden'));document.getElementById('tab-'+this.dataset.tab).classList.remove('hidden')}));
 
 // INIT
-async function initPanel(){setDb(false,'Connecting...');try{await sb.from('creators').select('id').limit(1);setDb(true);await updateStats();await Promise.all([renderYT(),renderNews(),renderUpd()]);}catch(e){setDb(false,'Failed: '+e.message)}}
-async function updateStats(){try{const[c,n,u]=await Promise.all([sb.from('creators').select('id',{count:'exact',head:true}),sb.from('news').select('id',{count:'exact',head:true}),sb.from('updates').select('id',{count:'exact',head:true})]);document.getElementById('statCreators').textContent=c.count||0;document.getElementById('statNews').textContent=n.count||0;document.getElementById('statUpdates').textContent=u.count||0;}catch(e){['statCreators','statNews','statUpdates'].forEach(id=>document.getElementById(id).textContent='—')}}
+async function initPanel(){
+    setDb(false,'Connecting...');
+    try{
+        await sb.from('creators').select('id').limit(1);
+        setDb(true);
+        await updateStats();
+        await Promise.all([renderYT(),renderNews(),renderUpd(),renderEvt(),loadSettings()]);
+    }catch(e){setDb(false,'Failed: '+e.message);console.error(e)}}
+async function updateStats(){try{const[yt,n,u,ev]=await Promise.all([sb.from('creators').select('id',{count:'exact',head:true}),sb.from('news').select('id',{count:'exact',head:true}),sb.from('updates').select('id',{count:'exact',head:true}),sb.from('events').select('id',{count:'exact',head:true})]);document.getElementById('statCreators').textContent=yt.count||0;document.getElementById('statNews').textContent=n.count||0;document.getElementById('statUpdates').textContent=u.count||0;document.getElementById('statEvents').textContent=ev.count||0;}catch(e){['statCreators','statNews','statUpdates','statEvents'].forEach(id=>document.getElementById(id).textContent='—')}}
 
-// ===== ROBLOX YOUTUBERS =====
+// ===== LOAD SETTINGS =====
+async function loadSettings(){
+    try{
+        const{data:settings}=await sb.from('site_settings').select('*').eq('id',1).single();
+        if(settings && settings.logo_url){document.getElementById('logoPreview').src=settings.logo_url;document.getElementById('logoPreview').classList.remove('hidden');document.getElementById('logoPlaceholder').classList.add('hidden');}
+        if(settings && settings.site_name) document.getElementById('siteName').value=settings.site_name;
+        if(settings && settings.site_description) document.getElementById('siteDesc').value=settings.site_description||'';
+    }catch(e){console.error(e)}
+}
+
+// ===== SAVE SETTINGS =====
+document.getElementById('saveSiteBtn').addEventListener('click',async()=>{
+    const name=document.getElementById('siteName').value.trim();
+    const desc=document.getElementById('siteDesc').value.trim();
+    setLoad('site',true);
+    const{error}=await sb.from('site_settings').update({site_name:name,site_description:desc}).eq('id',1);
+    setLoad('site',false);
+    if(error){toast('Error: '+error.message,'error');return}
+    loadSettings();updateStats();toast('Settings saved!');
+});
+
+// ===== LOGO UPLOAD =====
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('logoUpload');
+
+uploadArea.addEventListener('click',()=>fileInput.click());
+uploadArea.addEventListener('dragover',e=>{e.preventDefault();uploadArea.classList.add('dragover')});
+uploadArea.addEventListener('dragleave',()=>uploadArea.classList.remove('dragover'));
+uploadArea.addEventListener('drop',e=>{e.preventDefault();uploadArea.classList.remove('dragover');if(e.dataTransfer.files.length)fileInput.files=e.dataTransfer.files[0]});
+fileInput.addEventListener('change',async()=>{
+    const file = fileInput.files[0];
+    if(!file)return;
+    const isImage = file.type.startsWith('image/');
+    if(!isImage){toast('Please select an image file','error');return}
+    if(file.size > 5*1024*1024){toast('Image must be under 5MB','error');return;}
+
+    setLoad('logo',true);
+    const ext = file.name.split('.').pop();
+    const path = 'logo-'+Date.now()+'.'+ext;
+
+    try{
+        const {data,error} = await sb.storage.from(LOGO_BUCKET).upload(path, file);
+        if(error){setLoad('logo',false);toast('Upload failed: '+error.message,'error');return}
+        const{data:imgData} = sb.storage.from(LOGO_BUCKET).getPublicUrl(path);
+        const {data:{publicUrl}={}} = await imgData;
+
+        // Save URL to settings
+        const{error:serr} = await sb.from('site_settings').update({logo_url: publicUrl}).eq('id',1');
+        setLoad('logo',false);
+        if(serr){toast('Error saving logo URL','error');return}
+
+        // Show preview
+        document.getElementById('logoPreview').src=publicUrl;
+        document.getElementById('logoPreview').classList.remove('hidden');
+        document.getElementById('logoPlaceholder').classList.add('hidden');
+
+        loadSettings();updateStats();toast('Logo uploaded successfully!');
+    }catch(e){setLoad('logo',false);toast('Upload error: '+e.message,'error')}
+});
+
+document.getElementById('removeLogoBtn').addEventListener('click',async()=>{
+    const{data:curr}=await sb.from('site_settings').select('logo_url').eq('id',1).single();
+    if(curr && curr.logo_url){
+        try{await sb.storage.from(LOGO_BUCKET).remove([curr.logo_url.split('/').pop()]);}catch(e){}
+        const{error}=await sb.from('site_settings').update({logo_url:null}).eq('id',1);
+        if(error){toast('Error removing logo','error');return}
+        document.getElementById('logoPreview').src='';document.getElementById('logoPreview').classList.add('hidden');document.getElementById('logoPlaceholder').classList.remove('hidden');
+        loadSettings();toast('Logo removed','info');
+    }
+});
+
+// ===== YOUTUBERS =====
 const ytFields=['ytChannel','ytRoblox','ytLocation','ytCategory','ytSubs','ytVideos','ytLink','ytBio','ytBadge'];
-
-function resetYtForm(){document.getElementById('ytEditId').value='';ytFields.forEach(id=>document.getElementById(id).value='');document.getElementById('ytFormTitle').innerHTML='<i data-lucide="plus-circle" class="w-5 h-5 text-bd-green"></i> Add Roblox YouTuber';document.getElementById('ytFormDesc').textContent='Add a Bangladeshi YouTuber who creates Roblox content.';document.getElementById('ytBtnText').textContent='Add YouTuber';document.getElementById('ytForm').classList.remove('edit-mode');document.getElementById('ytCancelEdit').classList.add('hidden');lucide.createIcons()}
-
+function resetYtForm(){document.getElementById('ytEditId').value='';ytFields.forEach(id=>document.getElementById(id).value='');document.getElementById('ytFormTitle').innerHTML='<i data-lucide="plus-circle" class="w-5 h-5 text-bd-green"></i> Add Roblox YouTuber';document.getElementById('ytBtnText').textContent='Add YouTuber';document.getElementById('ytForm').classList.remove('edit-mode');document.getElementById('ytCancelEdit').classList.add('hidden');lucide.createIcons()}
 document.getElementById('ytCancelEdit').addEventListener('click',resetYtForm);
 
 document.getElementById('ytSaveBtn').addEventListener('click',async()=>{
     const channel=document.getElementById('ytChannel').value.trim(),roblox=document.getElementById('ytRoblox').value.trim(),location=document.getElementById('ytLocation').value.trim(),category=document.getElementById('ytCategory').value,subs=document.getElementById('ytSubs').value.trim(),videos=document.getElementById('ytVideos').value.trim(),link=document.getElementById('ytLink').value.trim(),bio=document.getElementById('ytBio').value.trim(),badge=document.getElementById('ytBadge').value,editId=document.getElementById('ytEditId').value;
-    if(!channel||!bio){toast('Channel name and bio are required','error');return}
+    if(!channel||!bio){toast('Channel name and bio required','error');return}
     setLoad('yt',true);
     const row={channel_name:channel,roblox_username:roblox,location,category,bio,subscribers:subs||'0',videos:videos||'0',youtube_link:link,badge};
     let error;
-    if(editId){({error}=await sb.from('creators').update(row).eq('id',editId).select());}
-    else{({error}=await sb.from('creators').insert([row]).select());}
+    if(editId){({error}=await sb.from('creators').update(row).eq('id',editId).select();}else{({error}=await sb.from('creators').insert([row]).select();}
     setLoad('yt',false);
     if(error){toast('Error: '+error.message,'error');return}
     resetYtForm();renderYT();updateStats();toast(editId?'YouTuber updated!':'YouTuber added!');
 });
 
-function editYT(c){
-    document.getElementById('ytEditId').value=c.id;
-    document.getElementById('ytChannel').value=c.channel_name||'';
-    document.getElementById('ytRoblox').value=c.roblox_username||'';
-    document.getElementById('ytLocation').value=c.location||'';
-    document.getElementById('ytCategory').value=c.category||'gameplay';
-    document.getElementById('ytSubs').value=c.subscribers||'';
-    document.getElementById('ytVideos').value=c.videos||'';
-    document.getElementById('ytLink').value=c.youtube_link||'';
-    document.getElementById('ytBio').value=c.bio||'';
-    document.getElementById('ytBadge').value=c.badge||'';
-    document.getElementById('ytFormTitle').innerHTML='<i data-lucide="pencil" class="w-5 h-5 text-amber-400"></i> Editing: '+c.channel_name;
-    document.getElementById('ytFormDesc').textContent='Modify the info below and click Save.';
-    document.getElementById('ytBtnText').textContent='Save Changes';
-    document.getElementById('ytForm').classList.add('edit-mode');
-    document.getElementById('ytCancelEdit').classList.remove('hidden');
-    document.getElementById('ytForm').scrollIntoView({behavior:'smooth',block:'start'});
-    lucide.createIcons();
-}
-
+function editYT(c){document.getElementById('ytEditId').value=c.id;document.getElementById('ytChannel').value=c.channel_name||'';document.getElementById('ytRoblox').value=c.roblox_username||'';document.getElementById('ytLocation').value=c.location||'';document.getElementById('ytCategory').value=c.category||'gameplay';document.getElementById('ytSubs').value=c.subscribers||'';document.getElementById('ytVideos').value=c.videos||'';document.getElementById('ytLink').value=c.youtube_link||'';document.getElementById('ytBio').value=c.bio||'';document.getElementById('ytBadge').value=c.badge||'';document.getElementById('ytFormTitle').innerHTML='<i data-lucide="pencil" class="w-5 h-5 text-amber-400"></i> Editing: '+c.channel_name;document.getElementById('ytBtnText').textContent='Save Changes';document.getElementById('ytForm').classList.add('edit-mode');document.getElementById('ytCancelEdit').classList.remove('hidden');document.getElementById('ytForm').scrollIntoView({behavior:'smooth',block:'start'});lucide.createIcons()}
 async function renderYT(){
     const el=document.getElementById('ytList');
     el.innerHTML='<div class="text-center py-8"><span class="loading-spinner" style="width:24px;height:24px;border-width:3px"></span></div>';
     const{data:list,error}=await sb.from('creators').select('*').order('created_at',{ascending:false});
     if(error){el.innerHTML=`<p class="text-center py-12 text-bd-red text-sm">Error: ${error.message}</p>`;return}
-    if(!list.length){el.innerHTML=`<div class="text-center py-12 text-white/20"><i data-lucide="youtube" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p>No Roblox YouTubers added yet.</p></div>`;lucide.createIcons();return}
-    el.innerHTML=list.map(c=>{
-        const col=cc[c.category]||'red';
-        return `<div class="bg-bd-card rounded-2xl p-5 border border-bd-border card-hover ${document.getElementById('ytEditId')===c.id?'edit-mode':''}">
-            <div class="flex flex-col sm:flex-row sm:items-start gap-4">
-                <div class="w-12 h-12 rounded-xl bg-${col}-500/10 flex items-center justify-center flex-shrink-0 border border-${col}-500/20">
-                    <svg class="w-5 h-5 text-${col}-400" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex flex-wrap items-center gap-2 mb-1">
-                        <h4 class="font-semibold">${c.channel_name}</h4>
-                        ${c.roblox_username?`<span class="text-xs text-white/30">${c.roblox_username}</span>`:''}
-                        <span class="px-2 py-0.5 bg-${col}-500/10 text-${col}-400 text-[10px] font-semibold rounded-full uppercase">${ct[c.category]||c.category}</span>
-                        ${c.badge?`<span class="px-2 py-0.5 bg-amber-500/10 text-amber-400 text-[10px] font-semibold rounded-full">${bl[c.badge]||c.badge}</span>`:''}
-                    </div>
-                    <p class="text-sm text-white/30">${c.bio}</p>
-                    <div class="flex flex-wrap gap-3 mt-2 text-xs text-white/20">
-                        ${c.subscribers&&c.subscribers!=='0'?`<span>👥 ${c.subscribers} subs</span>`:''}
-                        ${c.videos&&c.videos!=='0'?`<span>🎬 ${c.videos} videos</span>`:''}
-                        ${c.location?`<span>📍 ${c.location}</span>`:''}
-                    </div>
-                    ${c.youtube_link?`<a href="${c.youtube_link}" target="_blank" class="inline-flex items-center gap-1 mt-2 text-xs text-red-400 hover:text-red-300 transition-colors"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg> YouTube Channel</a>`:''}
-                </div>
-                <div class="flex gap-2 flex-shrink-0">
-                    <button onclick='editYT(${JSON.stringify(c).replace(/'/g,"&#39;")})' class="p-2.5 bg-amber-500/5 hover:bg-amber-500/15 text-amber-400/60 hover:text-amber-400 rounded-xl transition-all border border-amber-500/10 hover:border-amber-500/20" title="Edit"><i data-lucide="pencil" class="w-4 h-4"></i></button>
-                    <button onclick="deleteYT('${c.id}')" class="p-2.5 bg-bd-red/5 hover:bg-bd-red/15 text-bd-red/60 hover:text-bd-red rounded-xl transition-all border border-bd-red/10 hover:border-bd-red/20" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                </div>
+    if(!list.length){el.innerHTML=`<div class="text-center py-12 text-white/20"><i data-lucide="youtube" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p>No Roblox YouTububers added yet.</p></div>`;lucide.createIcons();return}
+    el.innerHTML=list.map(c=>{const col=CC[c.category]||'red';return `<div class="bg-bd-card rounded-2xl p-5 border border-bd-border card-hover ${document.getElementById('ytEditId')===c.id?'edit-mode':''}">
+        <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-${col}-500/10 flex items-center justify-center border border-${col}-500/20 text-${col}-400 font-bold text-xl">${c.channel_name.charAt(0)}</div>
+            <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-1"><h4 class="font-semibold">${c.channel_name}</h4>${c.badge?`<span class="text-xs">${BL[c.badge]||''}</span>`:''}</div>
+                ${c.roblox_username?`<p class="text-xs text-white/30">${c.roblox_username}</p>`:''}
+                <p class="text-sm text-white/30">${c.bio}</p>
+                <div class="flex flex-wrap gap-2 mt-2"><span class="px-2.5 py-1 bg-${col}-500/10 text-${col}-400 text-xs font-medium rounded-lg">${CT[c.category]||c.category}</span>${c.subscribers&&c.subscribers!=='0'?`<span class="px-2.5 py-1 bg-white/5 text-white/50 text-xs font-medium rounded-lg">👥 ${c.subscribers}</span>`:''}${c.videos&&c.videos!=='0'?`<span class="px-2.5 py-1 bg-white/5 text-white/50 text-xs font-medium rounded-lg">🎬 ${c.videos} videos</span>`:''}</div>
+                ${c.youtube_link?`<a href="${c.youtube_link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 mt-2 text-xs text-red-400 hover:text-red-300 transition-colors"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg> YouTube</a>`:''}
+                ${c.location?`<p class="text-[11px] text-white/15 mt-2">📍 ${c.location}</p>`:''}
+            </div>
+            <div class="flex gap-2 flex-shrink-0">
+                <button onclick='editYT(${JSON.stringify(c).replace(/'/g,"&#39;")})' class="p-2.5 bg-amber-500/5 hover:bg-amber-500/15 text-amber-400/60 hover:text-amber-400 rounded-xl transition-all border border-amber-500/10" title="Edit"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                <button onclick="deleteYT('${c.id}')" class="p-2.5 bg-bd-red/5 hover:bg-bd-red/15 text-bd-red/60 hover:text-bd-red rounded-xl transition-all border border-bd-red/10" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
             </div>
         </div>`}).join('');
     lucide.createIcons();
 }
-
 async function deleteYT(id){if(!confirm('Delete this YouTuber permanently?'))return;const{error}=await sb.from('creators').delete().eq('id',id);if(error){toast('Error: '+error.message,'error');return}if(document.getElementById('ytEditId')===id)resetYtForm();renderYT();updateStats();toast('YouTuber deleted','info')}
 
 // ===== NEWS =====
 const newsFields=['nTitle','nCategory','nDate','nSummary','nContent'];
-function resetNewsForm(){document.getElementById('newsEditId').value='';['nTitle','nSummary','nContent'].forEach(id=>document.getElementById(id).value='');document.getElementById('nDate').value='';document.getElementById('nFeatured').checked=false;document.getElementById('nFormTitle'===undefined?'':'x');document.getElementById('newsFormTitle').innerHTML='<i data-lucide="plus-circle" class="w-5 h-5 text-bd-red"></i> Add News';document.getElementById('nBtnText').textContent='Add News';document.getElementById('newsForm').classList.remove('edit-mode');document.getElementById('newsCancelEdit').classList.add('hidden');lucide.createIcons()}
+function resetNewsForm(){document.getElementById('newsEditId').value='';['nTitle','nSummary','nContent'].forEach(id=>document.getElementById(id).value='');document.getElementById('nDate').value='';document.getElementById('nFeatured').checked=false;document.getElementById('newsFormTitle').innerHTML='<i data-lucide="plus-circle" class="w-5 h-5 text-bd-red"></i> Add News';document.getElementById('nBtnText').textContent='Add News';document.getElementById('newsForm').classList.remove('edit-mode');document.getElementById('newsCancelEdit').classList.add('hidden');lucide.createIcons()}
 document.getElementById('newsCancelEdit').addEventListener('click',resetNewsForm);
-
 document.getElementById('newsSaveBtn').addEventListener('click',async()=>{
     const title=document.getElementById('nTitle').value.trim(),category=document.getElementById('nCategory').value,date=document.getElementById('nDate').value,summary=document.getElementById('nSummary').value.trim(),content=document.getElementById('nContent').value.trim(),featured=document.getElementById('nFeatured').checked,editId=document.getElementById('newsEditId').value;
     if(!title||!summary){toast('Title and summary required','error');return}
     setLoad('n',true);const row={title,category,date:date||new Date().toISOString().split('T')[0],summary,content,featured};let error;
-    if(editId){({error}=await sb.from('news').update(row).eq('id',editId).select())}else{({error}=await sb.from('news').insert([row]).select())}
-    setLoad('n',false);if(error){toast('Error: '+error.message,'error');return}resetNewsForm();renderNews();updateStats();toast(editId?'News updated!':'News added!');
-});
-
-function editNews(n){
-    document.getElementById('newsEditId').value=n.id;document.getElementById('nTitle').value=n.title||'';document.getElementById('nCategory').value=n.category||'community';document.getElementById('nDate').value=n.date||'';document.getElementById('nSummary').value=n.summary||'';document.getElementById('nContent').value=n.content||'';document.getElementById('nFeatured').checked=!!n.featured;document.getElementById('newsFormTitle').innerHTML='<i data-lucide="pencil" class="w-5 h-5 text-amber-400"></i> Editing: '+n.title;document.getElementById('nBtnText').textContent='Save Changes';document.getElementById('newsForm').classList.add('edit-mode');document.getElementById('newsCancelEdit').classList.remove('hidden');document.getElementById('newsForm').scrollIntoView({behavior:'smooth',block:'start'});lucide.createIcons();
-}
-
+    if(editId){({error}=await sb.from('news').update(row).eq('id',editId).select()}else{({error}=await sb.from('news').insert([row]).select()}
+    setLoad('n',false);if(error){toast('Error: '+error.message,'error');return}resetNewsForm();renderNews();updateStats();toast(editId?'News updated!':'News added!')});
+function editNews(n){document.getElementById('newsEditId').value=n.id;document.getElementById('nTitle').value=n.title||'';document.getElementById('nCategory').value=n.category||'community';document.getElementById('nDate').value=n.date||'';document.getElementById('nSummary').value=n.summary||'';document.getElementById('nContent').value=n.content||'';document.getElementById('nFeatured').checked=!!n.featured;document.getElementById('newsFormTitle').innerHTML='<i data-lucide="pencil" class="w-5 h-5 text-amber-400"></i> Editing: '+n.title;document.getElementById('nBtnText').textContent='Save Changes';document.getElementById('newsForm').classList.add('edit-mode');document.getElementById('newsCancelEdit').classList.remove('hidden');document.getElementById('newsForm').scrollIntoView({behavior:'smooth',block:'start'});lucide.createIcons()}
 async function renderNews(){
     const el=document.getElementById('newsList');el.innerHTML='<div class="text-center py-8"><span class="loading-spinner" style="width:24px;height:24px;border-width:3px"></span></div>';
     const{data:list,error}=await sb.from('news').select('*').order('created_at',{ascending:false});
     if(error){el.innerHTML=`<p class="text-center py-12 text-bd-red text-sm">Error: ${error.message}</p>`;return}
     if(!list.length){el.innerHTML=`<div class="text-center py-12 text-white/20"><i data-lucide="newspaper" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p>No news yet.</p></div>`;lucide.createIcons();return}
-    el.innerHTML=list.map(n=>{const col=cc[n.category]||'blue';return `<div class="bg-bd-card rounded-2xl p-5 border border-bd-border card-hover"><div class="flex flex-col sm:flex-row sm:items-start gap-4"><div class="flex-1 min-w-0"><div class="flex flex-wrap items-center gap-2 mb-2">${n.featured?'<span class="px-2.5 py-0.5 bg-bd-red/10 text-bd-red text-[10px] font-semibold rounded-full">FEATURED</span>':''}<span class="px-2.5 py-0.5 bg-${col}-500/10 text-${col}-400 text-[10px] font-semibold rounded-full uppercase">${n.category}</span><span class="text-xs text-white/20">${fmtDate(n.date)}</span></div><h4 class="font-semibold text-lg mb-1">${n.title}</h4><p class="text-sm text-white/30">${n.summary}</p></div><div class="flex gap-2 flex-shrink-0"><button onclick='editNews(${JSON.stringify(n).replace(/'/g,"&#39;")})' class="p-2.5 bg-amber-500/5 hover:bg-amber-500/15 text-amber-400/60 hover:text-amber-400 rounded-xl transition-all border border-amber-500/10 hover:border-amber-500/20" title="Edit"><i data-lucide="pencil" class="w-4 h-4"></i></button><button onclick="deleteNews('${n.id}')" class="p-2.5 bg-bd-red/5 hover:bg-bd-red/15 text-bd-red/60 hover:text-bd-red rounded-xl transition-all border border-bd-red/10 hover:border-bd-red/20" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></div></div>`}).join('');
-    lucide.createIcons();
-}
+    const featured=list.find(n=>n.featured)||list[0];const sideNews=list.filter(n=>n.id!==featured.id).slice(0,2);const fCol=CC[featured.category]||'red';
+    el.innerHTML=`<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="md:col-span-2 bg-bd-card rounded-3xl overflow-hidden card-hover border border-bd-border">
+            <div class="relative h-64 sm:h-80 bg-gradient-to-br from-bd-dark via-bd-card to-bd-border"><div class="absolute bottom-0 left-0 right-0 p-6 sm:p-8">${featured.featured?'<span class="inline-block px-3 py-1 bg-bd-red text-white text-xs font-semibold rounded-full mb-3">FEATURED</span>':''}<span class="inline-block px-3 py-1 bg-${fCol}-500/10 text-${fCol}-400 text-xs font-semibold rounded-full mb-3 uppercase">${featured.category}</span><h3 class="text-xl sm:text-2xl font-semibold text-white mb-2">${featured.title}</h3><p class="text-white/50 text-sm">${featured.summary}</p></div></div>
+            <div class="p-6 flex items-center justify-between border-t border-bd-border"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-bd-green/20 rounded-full flex items-center justify-center"><i data-lucide="user" class="w-4 h-4 text-bd-green"></i></div><div><p class="text-sm font-medium">Admin Team</p><p class="text-xs text-white/30">${fmtDate(featured.date)}</p></div></div><a href="news.html" class="text-sm font-medium text-bd-green hover:text-bd-green/70 transition-colors">Read More →</a></div>
+        </div>
+        <div class="flex flex-col gap-6">
+            ${sideNews.map(n=>{const col=CC[n.category]||'blue';return `<div class="bg-bd-card rounded-3xl p-6 card-hover border border-bd-border flex-1"><span class="inline-block px-3 py-1 bg-${col}-500/10 text-${col}-400 text-xs font-semibold rounded-full mb-3 uppercase">${n.category}</span><h3 class="text-lg font-semibold mb-2 leading-snug">${n.title}</h3><p class="text-sm text-white/40 mb-3 line-clamp-2">${n.summary}</p><p class="text-xs text-white/20">${fmtDate(n.date)}</p></div>`;}).join('')}
+        </div>
+    </div>`;lucide.createIcons();}
 async function deleteNews(id){if(!confirm('Delete this news?'))return;const{error}=await sb.from('news').delete().eq('id',id);if(error){toast('Error: '+error.message,'error');return}if(document.getElementById('newsEditId')===id)resetNewsForm();renderNews();updateStats();toast('News deleted','info')}
 
 // ===== UPDATES =====
-function resetUpdForm(){document.getElementById('updEditId').value='';['uTitle','uDesc'].forEach(id=>document.getElementById(id).value='');document.getElementById('uDate').value='';document.getElementById('updFormTitle').innerHTML='<i data-lucide="plus-circle" class="w-5 h-5 text-amber-400"></i> Add Update';document.getElementById('uBtnText').textContent='Add Update';document.getElementById('updForm').classList.remove('edit-mode');document.getElementById('updCancelEdit').classList.add('hidden');lucide.createIcons()}
+const updFields=['uTitle','uCategory','uDate','uDesc'];
+function resetUpdForm(){document.getElementById('updEditId').value='';['uTitle','uDesc'].forEach(id=>document.getElementById(id).value='');document.getElementById('uDate').value='';document.getElementById('updFormTitle').innerHTML='<i data-lucide="plus-circle" class="w-5 h-5 text-amber-400"></i> Add Update';document.getElementById('uBtnText')='Add Update';document.getElementById('updForm').classList.remove('edit-mode');document.getElementById('updCancelEdit').classList.add('hidden');lucide.createIcons()}
 document.getElementById('updCancelEdit').addEventListener('click',resetUpdForm);
-
 document.getElementById('updSaveBtn').addEventListener('click',async()=>{
     const title=document.getElementById('uTitle').value.trim(),category=document.getElementById('uCategory').value,date=document.getElementById('uDate').value,desc=document.getElementById('uDesc').value.trim(),editId=document.getElementById('updEditId').value;
     if(!title||!desc){toast('Title and description required','error');return}
     setLoad('u',true);const row={title,category,date:date||new Date().toISOString().split('T')[0],description:desc};let error;
-    if(editId){({error}=await sb.from('updates').update(row).eq('id',editId).select())}else{({error}=await sb.from('updates').insert([row]).select())}
-    setLoad('u',false);if(error){toast('Error: '+error.message,'error');return}resetUpdForm();renderUpd();updateStats();toast(editId?'Update saved!':'Update added!');
-});
-
-function editUpd(u){
-    document.getElementById('updEditId').value=u.id;document.getElementById('uTitle').value=u.title||'';document.getElementById('uCategory').value=u.category||'server';document.getElementById('uDate').value=u.date||'';document.getElementById('uDesc').value=u.description||'';document.getElementById('updFormTitle').innerHTML='<i data-lucide="pencil" class="w-5 h-5 text-amber-400"></i> Editing: '+u.title;document.getElementById('uBtnText').textContent='Save Changes';document.getElementById('updForm').classList.add('edit-mode');document.getElementById('updCancelEdit').classList.remove('hidden');document.getElementById('updForm').scrollIntoView({behavior:'smooth',block:'start'});lucide.createIcons();
-}
-
+    if(editId){({error}=await sb.from('updates').update(row).eq('id',editId).select()}else{({error}=await sb.from('updates').insert([row]).select()}
+    setLoad('u',false);if(error){toast('Error: '+error.message,'error');return}resetUpdForm();renderUpd();updateStats();toast(editId?'Update saved!':'Update added!')}
+function editUpd(u){document.getElementById('updEditId').value=u.id;document.getElementById('uTitle').value=u.title||'';document.getElementById('uCategory').value=u.category||'server';document.getElementById('uDate').value=u.date||'';document.getElementById('uDesc').value=u.description||'';document.getElementById('updFormTitle').innerHTML='<i data-lucide="pencil" class="w-5 h-5 text-amber-400"></i> Editing: '+u.title;document.getElementById('uBtnText')='Save Changes';document.getElementById('updForm').classList.add('edit-mode');document.getElementById('updCancelEdit').classList.remove('hidden');document.getElementById('updForm').scrollIntoView({behavior:'smooth',block:'start'});lucide.createIcons()}
 async function renderUpd(){
     const el=document.getElementById('updList');el.innerHTML='<div class="text-center py-8"><span class="loading-spinner" style="width:24px;height:24px;border-width:3px"></span></div>';
     const{data:list,error}=await sb.from('updates').select('*').order('created_at',{ascending:false});
     if(error){el.innerHTML=`<p class="text-center py-12 text-bd-red text-sm">Error: ${error.message}</p>`;return}
     if(!list.length){el.innerHTML=`<div class="text-center py-12 text-white/20"><i data-lucide="refresh-cw" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p>No updates yet.</p></div>`;lucide.createIcons();return}
-    el.innerHTML=list.map(u=>{const col=cc[u.category]||'amber';return `<div class="bg-bd-card rounded-2xl p-5 border border-bd-border card-hover"><div class="flex flex-col sm:flex-row sm:items-start gap-4"><div class="flex-1 min-w-0"><div class="flex flex-wrap items-center gap-2 mb-2"><span class="px-2.5 py-0.5 bg-${col}-500/10 text-${col}-400 text-[10px] font-semibold rounded-full uppercase">${u.category}</span><span class="text-xs text-white/20">${fmtDate(u.date)}</span></div><h4 class="font-semibold mb-1">${u.title}</h4><p class="text-sm text-white/30">${u.description}</p></div><div class="flex gap-2 flex-shrink-0"><button onclick='editUpd(${JSON.stringify(u).replace(/'/g,"&#39;")})' class="p-2.5 bg-amber-500/5 hover:bg-amber-500/15 text-amber-400/60 hover:text-amber-400 rounded-xl transition-all border border-amber-500/10 hover:border-amber-500/20" title="Edit"><i data-lucide="pencil" class="w-4 h-4"></i></button><button onclick="deleteUpd('${u.id}')" class="p-2.5 bg-bd-red/5 hover:bg-bd-red/15 text-bd-red/60 hover:text-bd-red rounded-xl transition-all border border-bd-red/10 hover:border-bd-red/20" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></div></div>`}).join('');
-    lucide.createIcons();
-}
+    el.innerHTML=list.map(u=>{const col=CC[u.category]||'amber';const icon=IC[u.category]||'refresh-cw';return `<div class="bg-bd-card rounded-2xl p-5 card-hover border border-bd-border">
+        <div class="w-10 h-10 bg-${col}-500/10 rounded-xl flex items-center justify-center mb-4"><i data-lucide="${icon}" class="w-5 h-5 text-${col}-400"></i></div>
+        <div class="flex flex-wrap items-center gap-2 mb-2"><span class="px-2.5 py-0.5 bg-${col}-500/10 text-${col}-400 text-[10px] font-semibold rounded-full uppercase">${u.category}</span><span class="text-xs text-white/20">${fmtDate(u.date)}</span></div>
+        <h4 class="font-semibold mb-1">${u.title}</h4><p class="text-sm text-white/30">${u.description}</p>
+    </div></div>`}).join('');lucide.createIcons();}
 async function deleteUpd(id){if(!confirm('Delete this update?'))return;const{error}=await sb.from('updates').delete().eq('id',id);if(error){toast('Error: '+error.message,'error');return}if(document.getElementById('updEditId')===id)resetUpdForm();renderUpd();updateStats();toast('Update deleted','info')}
+
+// ===== MOBILE MENU =====
+document.getElementById('mobileMenuBtn').addEventListener('click',function(){document.getElementById('mobileMenu').classList.toggle('hidden')});
 </script>
 </body>
 </html>
