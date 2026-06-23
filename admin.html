@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -23,20 +24,21 @@
     <style>
         html{scroll-behavior:smooth}body{background:#0A0A0A}
         .gradient-text{background:linear-gradient(135deg,#006A4E,#F42A41);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .glass{background:rgba(255,255,255,.04);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06)}
         .roblox-icon{filter:drop-shadow(0 0 8px rgba(0,106,78,.4))}
         .tab-btn.active{background:#006A4E;color:white;border-color:#006A4E}
         .card-hover{transition:all 300ms cubic-bezier(.4,0,.2,1)}
         .card-hover:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
-        @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-        .shake{animation:shake .4s ease-in-out}
-        @keyframes slideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-        .slide-in{animation:slideIn .3s ease-out}
-        .toast{animation:slideIn .3s ease-out}
+        @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}.shake{animation:shake .4s ease-in-out}
+        @keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes fadeOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(30px)}}
+        .toast-in{animation:slideIn .3s ease-out forwards}
+        .toast-out{animation:fadeOut .3s ease-in forwards}
         input,textarea,select{background:#0A0A0A!important;border:1px solid #1F1F1F!important;color:white!important;outline:none!important;transition:border-color .2s!important}
         input:focus,textarea:focus,select:focus{border-color:#006A4E!important;box-shadow:0 0 0 3px rgba(0,106,78,.15)!important}
         input::placeholder,textarea::placeholder{color:#555!important}
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0A0A0A}::-webkit-scrollbar-thumb{background:#333;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#555}
+        .loading-spinner{border:2px solid #1F1F1F;border-top:2px solid #006A4E;border-radius:50%;width:16px;height:16px;animation:spin .6s linear infinite;display:inline-block}
+        @keyframes spin{to{transform:rotate(360deg)}}
     </style>
 </head>
 <body class="font-sans text-white antialiased">
@@ -60,17 +62,17 @@
         <div id="loginBox" class="bg-bd-card rounded-2xl p-8 border border-bd-border">
             <div id="loginError" class="hidden mb-4 p-3 bg-bd-red/10 border border-bd-red/20 rounded-xl text-bd-red text-sm text-center"></div>
             <div class="mb-5">
-                <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Username</label>
+                <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Email</label>
                 <div class="relative">
-                    <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20"></i>
-                    <input id="loginUser" type="text" placeholder="Enter username" class="w-full pl-10 pr-4 py-3 rounded-xl text-sm" autocomplete="off">
+                    <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20"></i>
+                    <input id="loginUser" type="email" placeholder="Enter your email" class="w-full pl-10 pr-4 py-3 rounded-xl text-sm" autocomplete="off">
                 </div>
             </div>
             <div class="mb-6">
                 <label class="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Password</label>
                 <div class="relative">
                     <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20"></i>
-                    <input id="loginPass" type="password" placeholder="Enter password" class="w-full pl-10 pr-4 py-3 rounded-xl text-sm" autocomplete="off">
+                    <input id="loginPass" type="password" placeholder="Enter password" class="w-full pl-10 pr-10 py-3 rounded-xl text-sm" autocomplete="off">
                     <button type="button" id="togglePass" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors"><i data-lucide="eye" class="w-4 h-4"></i></button>
                 </div>
             </div>
@@ -99,8 +101,8 @@
             </div>
             <div class="flex items-center gap-3">
                 <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-bd-green/10 border border-bd-green/20 rounded-lg">
-                    <div class="w-2 h-2 bg-bd-green rounded-full"></div>
-                    <span class="text-xs text-bd-green font-medium">junaidkhan12</span>
+                    <div class="w-2 h-2 bg-bd-green rounded-full animate-pulse"></div>
+                    <span class="text-xs text-bd-green font-medium truncate max-w-[180px]">muntasirjunayed64@gmail.com</span>
                 </div>
                 <button id="logoutBtn" class="flex items-center gap-2 px-4 py-2 bg-bd-red/10 hover:bg-bd-red/20 text-bd-red text-sm font-medium rounded-xl transition-all border border-bd-red/10">
                     <i data-lucide="log-out" class="w-4 h-4"></i><span class="hidden sm:inline">Logout</span>
@@ -108,42 +110,49 @@
             </div>
         </div>
 
+        <!-- Connection Status -->
+        <div id="dbStatus" class="mb-6 flex items-center gap-2 text-xs px-4 py-2 rounded-xl border"></div>
+
         <!-- Stats Row -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div class="bg-bd-card rounded-2xl p-5 border border-bd-border">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-semibold text-white/40 uppercase">Creators</span>
-                    <i data-lucide="users" class="w-4 h-4 text-bd-green"></i>
+                    <i data-lucide="gamepad-2" class="w-4 h-4 text-bd-green"></i>
                 </div>
-                <p id="statCreators" class="text-2xl font-bold">0</p>
+                <p id="statCreators" class="text-2xl font-bold"><span class="loading-spinner"></span></p>
+                <p class="text-[10px] text-white/20 mt-1">Roblox Developers</p>
             </div>
             <div class="bg-bd-card rounded-2xl p-5 border border-bd-border">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-semibold text-white/40 uppercase">News</span>
                     <i data-lucide="newspaper" class="w-4 h-4 text-bd-red"></i>
                 </div>
-                <p id="statNews" class="text-2xl font-bold">0</p>
+                <p id="statNews" class="text-2xl font-bold"><span class="loading-spinner"></span></p>
+                <p class="text-[10px] text-white/20 mt-1">Articles Posted</p>
             </div>
             <div class="bg-bd-card rounded-2xl p-5 border border-bd-border">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-semibold text-white/40 uppercase">Updates</span>
                     <i data-lucide="refresh-cw" class="w-4 h-4 text-amber-400"></i>
                 </div>
-                <p id="statUpdates" class="text-2xl font-bold">0</p>
+                <p id="statUpdates" class="text-2xl font-bold"><span class="loading-spinner"></span></p>
+                <p class="text-[10px] text-white/20 mt-1">Changelog Entries</p>
             </div>
             <div class="bg-bd-card rounded-2xl p-5 border border-bd-border">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-semibold text-white/40 uppercase">Status</span>
-                    <i data-lucide="activity" class="w-4 h-4 text-green-400"></i>
+                    <span class="text-xs font-semibold text-white/40 uppercase">Database</span>
+                    <i data-lucide="database" class="w-4 h-4 text-blue-400"></i>
                 </div>
-                <p class="text-2xl font-bold text-green-400">Live</p>
+                <p id="statDb" class="text-2xl font-bold text-blue-400">Supabase</p>
+                <p class="text-[10px] text-white/20 mt-1">Cloud Connected</p>
             </div>
         </div>
 
         <!-- Tabs -->
         <div class="flex flex-wrap gap-2 mb-6">
             <button class="tab-btn active px-5 py-2.5 rounded-xl text-sm font-medium bg-transparent border border-bd-border text-white/50 hover:bg-bd-green hover:text-white hover:border-bd-green transition-all" data-tab="creators">
-                <span class="flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> Creators</span>
+                <span class="flex items-center gap-2"><i data-lucide="gamepad-2" class="w-4 h-4"></i> Creators</span>
             </button>
             <button class="tab-btn px-5 py-2.5 rounded-xl text-sm font-medium bg-transparent border border-bd-border text-white/50 hover:bg-bd-green hover:text-white hover:border-bd-green transition-all" data-tab="news">
                 <span class="flex items-center gap-2"><i data-lucide="newspaper" class="w-4 h-4"></i> News</span>
@@ -158,33 +167,49 @@
 
         <!-- ============ CREATORS TAB ============ -->
         <div id="tab-creators" class="tab-content">
-            <!-- Add Creator Form -->
             <div class="bg-bd-card rounded-2xl p-6 border border-bd-border mb-6">
-                <h3 class="font-semibold text-lg mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-bd-green"></i> Add New Creator</h3>
+                <h3 class="font-semibold text-lg mb-1 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-bd-green"></i> Add Roblox Creator</h3>
+                <p class="text-xs text-white/30 mb-4">Add a Roblox game developer, builder, scripter, designer, or animator from Bangladesh.</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Name *</label><input id="cName" type="text" placeholder="e.g. RafiGaming" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
-                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Username *</label><input id="cUsername" type="text" placeholder="e.g. @rafi_roblox" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Display Name *</label><input id="cName" type="text" placeholder="e.g. RafiGaming" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Roblox Username *</label><input id="cUsername" type="text" placeholder="e.g. @rafi_roblox" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
                     <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Location</label><input id="cLocation" type="text" placeholder="e.g. Dhaka" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
-                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Category *</label>
-                        <select id="cCategory" class="w-full px-4 py-2.5 rounded-xl text-sm"><option value="developer">Developer</option><option value="builder">Builder</option><option value="designer">Designer</option><option value="scripter">Scripter</option><option value="animator">Animator</option></select>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Role *</label>
+                        <select id="cCategory" class="w-full px-4 py-2.5 rounded-xl text-sm">
+                            <option value="developer">Developer</option>
+                            <option value="builder">Builder</option>
+                            <option value="scripter">Scripter</option>
+                            <option value="designer">UI/UX Designer</option>
+                            <option value="animator">Animator</option>
+                            <option value="modeler">3D Modeler</option>
+                            <option value="composer">Music Composer</option>
+                            <option value="gfx">GFX Artist</option>
+                        </select>
                     </div>
                 </div>
-                <div class="mb-4"><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Bio *</label><textarea id="cBio" rows="2" placeholder="Short description..." class="w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea></div>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Visits</label><input id="cVisits" type="text" placeholder="e.g. 2M+" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
-                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Games/Projects</label><input id="cProjects" type="number" placeholder="e.g. 12" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
-                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Followers</label><input id="cFollowers" type="text" placeholder="e.g. 15K" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                <div class="mb-4"><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Bio * <span class="normal-case text-white/20">(What Roblox games/content they make)</span></label><textarea id="cBio" rows="2" placeholder="e.g. Creates obstacle courses and adventure games with 2M+ total visits on Roblox." class="w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea></div>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Total Visits</label><input id="cVisits" type="text" placeholder="e.g. 2M+" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Games Made</label><input id="cProjects" type="number" placeholder="e.g. 12" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Roblox Followers</label><input id="cFollowers" type="text" placeholder="e.g. 15K" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Badge</label>
+                        <select id="cBadge" class="w-full px-4 py-2.5 rounded-xl text-sm">
+                            <option value="">None</option>
+                            <option value="top">⭐ Top Creator</option>
+                            <option value="rising">⭐ Rising Star</option>
+                            <option value="mentor">🧠 Mentor</option>
+                        </select>
+                    </div>
                 </div>
-                <button id="addCreatorBtn" class="bg-bd-green hover:bg-bd-green/80 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Add Creator</button>
+                <button id="addCreatorBtn" class="bg-bd-green hover:bg-bd-green/80 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2"><span class="loading-spinner hidden" id="cSpinner"></span><i data-lucide="plus" class="w-4 h-4" id="cPlusIcon"></i> Add Creator</button>
             </div>
-            <!-- Creators List -->
             <div id="creatorsList" class="space-y-3"></div>
         </div>
 
         <!-- ============ NEWS TAB ============ -->
         <div id="tab-news" class="tab-content hidden">
             <div class="bg-bd-card rounded-2xl p-6 border border-bd-border mb-6">
-                <h3 class="font-semibold text-lg mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-bd-red"></i> Add New News</h3>
+                <h3 class="font-semibold text-lg mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-bd-red"></i> Add News Article</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                     <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Title *</label><input id="nTitle" type="text" placeholder="News title..." class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
                     <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Category *</label>
@@ -194,7 +219,10 @@
                 </div>
                 <div class="mb-4"><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Summary *</label><textarea id="nSummary" rows="2" placeholder="Brief summary..." class="w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea></div>
                 <div class="mb-4"><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Full Content</label><textarea id="nContent" rows="4" placeholder="Full article content (optional)..." class="w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea></div>
-                <button id="addNewsBtn" class="bg-bd-red hover:bg-bd-red/80 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Add News</button>
+                <div class="flex items-center gap-4 mb-4">
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="nFeatured" class="w-4 h-4 rounded accent-bd-red"><span class="text-sm text-white/50">Mark as Featured</span></label>
+                </div>
+                <button id="addNewsBtn" class="bg-bd-red hover:bg-bd-red/80 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2"><span class="loading-spinner hidden" id="nSpinner"></span><i data-lucide="plus" class="w-4 h-4" id="nPlusIcon"></i> Add News</button>
             </div>
             <div id="newsList" class="space-y-3"></div>
         </div>
@@ -202,7 +230,7 @@
         <!-- ============ UPDATES TAB ============ -->
         <div id="tab-updates" class="tab-content hidden">
             <div class="bg-bd-card rounded-2xl p-6 border border-bd-border mb-6">
-                <h3 class="font-semibold text-lg mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-amber-400"></i> Add New Update</h3>
+                <h3 class="font-semibold text-lg mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-amber-400"></i> Add Update</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                     <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Title *</label><input id="uTitle" type="text" placeholder="Update title..." class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
                     <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Category *</label>
@@ -211,7 +239,7 @@
                     <div><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Date</label><input id="uDate" type="date" class="w-full px-4 py-2.5 rounded-xl text-sm"></div>
                 </div>
                 <div class="mb-4"><label class="block text-xs font-semibold text-white/40 uppercase mb-1.5">Description *</label><textarea id="uDesc" rows="2" placeholder="What changed..." class="w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea></div>
-                <button id="addUpdateBtn" class="bg-amber-500 hover:bg-amber-600 text-black px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Add Update</button>
+                <button id="addUpdateBtn" class="bg-amber-500 hover:bg-amber-600 text-black px-6 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2"><span class="loading-spinner hidden" id="uSpinner"></span><i data-lucide="plus" class="w-4 h-4" id="uPlusIcon"></i> Add Update</button>
             </div>
             <div id="updatesList" class="space-y-3"></div>
         </div>
@@ -222,43 +250,64 @@
 <script>
 lucide.createIcons();
 
+// ===== SUPABASE SETUP =====
+const SUPABASE_URL = 'https://xfvzjdxucijqsijicati.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmdnpqZHh1Y2lqcXNpamljYXRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxOTI4ODgsImV4cCI6MjA5Nzc2ODg4OH0.w0Pf64wjp0hlP2tIVl2ijJAepy8pszYiyzFx4uGeXAM';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ===== ADMIN CREDENTIALS =====
+const ADMIN_EMAIL = 'muntasirjunayed64@gmail.com';
+const ADMIN_PASS = '01866922683mmj';
+
 // ===== HELPERS =====
-const LS = {
-    get(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch{return d}},
-    set(k,v){localStorage.setItem(k,JSON.stringify(v))}
-};
-function genId(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5)}
-function toast(msg,type='success'){
+function toast(msg, type='success'){
     const c=document.getElementById('toastContainer');
     const colors={success:'border-bd-green/30 bg-bd-green/10 text-bd-green',error:'border-bd-red/30 bg-bd-red/10 text-bd-red',info:'border-blue-500/30 bg-blue-500/10 text-blue-400'};
     const icons={success:'check-circle-2',error:'x-circle',info:'info'};
     const el=document.createElement('div');
-    el.className=`toast flex items-center gap-3 px-5 py-3 rounded-xl border ${colors[type]} text-sm font-medium backdrop-blur-xl`;
+    el.className=`toast-in flex items-center gap-3 px-5 py-3 rounded-xl border ${colors[type]} text-sm font-medium backdrop-blur-xl shadow-xl`;
     el.innerHTML=`<i data-lucide="${icons[type]}" class="w-4 h-4 flex-shrink-0"></i><span>${msg}</span>`;
     c.appendChild(el);lucide.createIcons();
-    setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(20px)';el.style.transition='all .3s';setTimeout(()=>el.remove(),300)},3000);
+    setTimeout(()=>{el.classList.remove('toast-in');el.classList.add('toast-out');setTimeout(()=>el.remove(),300)},3500);
 }
-function formatDate(d){if(!d)return new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
-const catColors={community:'blue',partnership:'green',achievement:'amber',education:'purple',announcement:'red',featured:'red',developer:'green',builder:'emerald',designer:'purple',scripter:'blue',animator:'amber',server:'amber',events:'purple',resources:'blue',features:'green',bugfix:'red'};
+function formatDate(d){if(!d)return new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});return new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+function setDbStatus(ok,msg){
+    const el=document.getElementById('dbStatus');
+    if(ok){el.className='mb-6 flex items-center gap-2 text-xs px-4 py-2 rounded-xl border border-bd-green/20 bg-bd-green/5 text-bd-green';el.innerHTML=`<div class="w-2 h-2 bg-bd-green rounded-full"></div>${msg||'Connected to Supabase'}`;}
+    else{el.className='mb-6 flex items-center gap-2 text-xs px-4 py-2 rounded-xl border border-bd-red/20 bg-bd-red/5 text-bd-red';el.innerHTML=`<div class="w-2 h-2 bg-bd-red rounded-full"></div>${msg||'Database connection failed'}`;}
+}
+function setLoading(id,loading){
+    const spinner=document.getElementById(id+'Spinner');
+    const icon=document.getElementById(id+'PlusIcon');
+    const btn=document.getElementById(id+'Btn')||document.getElementById('add'+id.charAt(0).toUpperCase()+id.slice(1)+'Btn');
+    if(loading){if(spinner)spinner.classList.remove('hidden');if(icon)icon.classList.add('hidden');if(btn)btn.disabled=true;}
+    else{if(spinner)spinner.classList.add('hidden');if(icon)icon.classList.remove('hidden');if(btn)btn.disabled=false;}
+}
+const catColors={community:'blue',partnership:'green',achievement:'amber',education:'purple',announcement:'red',featured:'red',developer:'green',builder:'emerald',scripter:'blue',designer:'purple',animator:'amber',modeler:'cyan',composer:'pink',gfx:'rose',server:'amber',events:'purple',resources:'blue',features:'green',bugfix:'red'};
+const badgeLabels={top:'⭐ Top Creator',rising:'⭐ Rising Star',mentor:'🧠 Mentor'};
 
 // ===== LOGIN =====
 document.getElementById('togglePass').addEventListener('click',function(){
     const p=document.getElementById('loginPass');
-    p.type=p.type==='password'?'text':'password';
+    const icon=this.querySelector('i');
+    if(p.type==='password'){p.type='text';icon.setAttribute('data-lucide','eye-off');}
+    else{p.type='password';icon.setAttribute('data-lucide','eye');}
+    lucide.createIcons();
 });
 document.getElementById('loginBtn').addEventListener('click',doLogin);
 document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+
 function doLogin(){
     const u=document.getElementById('loginUser').value.trim();
     const p=document.getElementById('loginPass').value;
     const err=document.getElementById('loginError');
-    if(u==='junaidkhan12'&&p==='pass'){
+    if(u===ADMIN_EMAIL && p===ADMIN_PASS){
         sessionStorage.setItem('bdAdmin','1');
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('adminPanel').classList.remove('hidden');
         initPanel();
     }else{
-        err.textContent='Invalid username or password';
+        err.textContent='Invalid email or password';
         err.classList.remove('hidden');
         document.getElementById('loginBox').classList.add('shake');
         setTimeout(()=>document.getElementById('loginBox').classList.remove('shake'),400);
@@ -272,7 +321,6 @@ document.getElementById('logoutBtn').addEventListener('click',()=>{
     document.getElementById('loginPass').value='';
     document.getElementById('loginError').classList.add('hidden');
 });
-// Auto-login
 if(sessionStorage.getItem('bdAdmin')==='1'){
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('adminPanel').classList.remove('hidden');
@@ -290,15 +338,38 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
 });
 
 // ===== INIT =====
-function initPanel(){updateStats();renderCreators();renderNews();renderUpdates()}
-function updateStats(){
-    document.getElementById('statCreators').textContent=LS.get('bd_creators',[]).length;
-    document.getElementById('statNews').textContent=LS.get('bd_news',[]).length;
-    document.getElementById('statUpdates').textContent=LS.get('bd_updates',[]).length;
+async function initPanel(){
+    setDbStatus(false,'Connecting to Supabase...');
+    try{
+        const {error} = await sb.from('creators').select('id').limit(1);
+        if(error) throw error;
+        setDbStatus(true,'Connected to Supabase ✓');
+        await updateStats();
+        await Promise.all([renderCreators(),renderNews(),renderUpdates()]);
+    }catch(e){
+        setDbStatus(false,'Connection failed: '+e.message);
+        console.error(e);
+    }
+}
+async function updateStats(){
+    try{
+        const [cRes,nRes,uRes]=await Promise.all([
+            sb.from('creators').select('id', {count:'exact',head:true}),
+            sb.from('news').select('id', {count:'exact',head:true}),
+            sb.from('updates').select('id', {count:'exact',head:true})
+        ]);
+        document.getElementById('statCreators').textContent=cRes.count||0;
+        document.getElementById('statNews').textContent=nRes.count||0;
+        document.getElementById('statUpdates').textContent=uRes.count||0;
+    }catch(e){
+        document.getElementById('statCreators').textContent='—';
+        document.getElementById('statNews').textContent='—';
+        document.getElementById('statUpdates').textContent='—';
+    }
 }
 
-// ===== CREATORS =====
-document.getElementById('addCreatorBtn').addEventListener('click',()=>{
+// ===== CREATORS (Roblox Creators) =====
+document.getElementById('addCreatorBtn').addEventListener('click',async()=>{
     const name=document.getElementById('cName').value.trim();
     const username=document.getElementById('cUsername').value.trim();
     const location=document.getElementById('cLocation').value.trim();
@@ -307,137 +378,163 @@ document.getElementById('addCreatorBtn').addEventListener('click',()=>{
     const visits=document.getElementById('cVisits').value.trim();
     const projects=document.getElementById('cProjects').value;
     const followers=document.getElementById('cFollowers').value.trim();
+    const badge=document.getElementById('cBadge').value;
     if(!name||!username||!bio){toast('Please fill in all required fields','error');return}
-    const list=LS.get('bd_creators',[]);
-    list.push({id:genId(),name,username,location,category,bio,visits:visits||'0',projects:projects||'0',followers:followers||'0',date:new Date().toISOString()});
-    LS.set('bd_creators',list);
+    setLoading('c',true);
+    const {data,error}=await sb.from('creators').insert([{name,username,location,category,bio,visits:visits||'0',projects:projects||'0',followers:followers||'0',badge}]).select();
+    setLoading('c',false);
+    if(error){toast('Error: '+error.message,'error');return}
     ['cName','cUsername','cLocation','cBio','cVisits','cFollowers'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('cProjects').value='';
-    renderCreators();updateStats();toast('Creator added successfully!');
+    document.getElementById('cBadge').value='';
+    renderCreators();updateStats();toast('Roblox Creator added to database!');
 });
-function renderCreators(){
-    const list=LS.get('bd_creators',[]);
+
+async function renderCreators(){
     const el=document.getElementById('creatorsList');
-    if(!list.length){el.innerHTML='<div class="text-center py-12 text-white/20"><i data-lucide="users" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p>No creators yet. Add one above.</p></div>';lucide.createIcons();return}
-    el.innerHTML=list.map((c,i)=>`
-    <div class="bg-bd-card rounded-2xl p-5 border border-bd-border card-hover flex flex-col sm:flex-row sm:items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-${catColors[c.category]||'green'}-500/10 flex items-center justify-center flex-shrink-0 border border-${catColors[c.category]||'green'}-500/10">
-            <span class="text-lg font-bold text-${catColors[c.category]||'green'}-400">${c.name.charAt(0)}</span>
-        </div>
-        <div class="flex-1 min-w-0">
-            <div class="flex flex-wrap items-center gap-2 mb-1">
-                <h4 class="font-semibold">${c.name}</h4>
-                <span class="text-xs text-white/30">${c.username}</span>
-                <span class="px-2 py-0.5 bg-${catColors[c.category]||'green'}-500/10 text-${catColors[c.category]||'green'}-400 text-[10px] font-semibold rounded-full uppercase">${c.category}</span>
+    el.innerHTML='<div class="text-center py-8"><span class="loading-spinner" style="width:24px;height:24px;border-width:3px"></span></div>';
+    const {data:list,error}=await sb.from('creators').select('*').order('created_at',{ascending:false});
+    if(error){el.innerHTML=`<div class="text-center py-12 text-bd-red"><p>Error loading creators: ${error.message}</p></div>`;return}
+    if(!list.length){el.innerHTML=`<div class="text-center py-12 text-white/20"><i data-lucide="gamepad-2" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p>No Roblox creators yet. Add one above.</p></div>`;lucide.createIcons();return}
+    el.innerHTML=list.map(c=>{
+        const col=catColors[c.category]||'green';
+        return `
+        <div class="bg-bd-card rounded-2xl p-5 border border-bd-border card-hover flex flex-col sm:flex-row sm:items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-${col}-500/10 flex items-center justify-center flex-shrink-0 border border-${col}-500/20">
+                <span class="text-lg font-bold text-${col}-400">${c.name.charAt(0)}</span>
             </div>
-            <p class="text-sm text-white/30 truncate">${c.bio}</p>
-            <div class="flex gap-4 mt-1.5 text-xs text-white/20">
-                ${c.visits?`<span>🎯 ${c.visits} visits</span>`:''}
-                ${c.projects?`<span>🎮 ${c.projects} projects</span>`:''}
-                ${c.followers?`<span>👥 ${c.followers} followers</span>`:''}
-                ${c.location?`<span>📍 ${c.location}</span>`:''}
+            <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                    <h4 class="font-semibold">${c.name}</h4>
+                    <span class="text-xs text-white/30">${c.username}</span>
+                    <span class="px-2 py-0.5 bg-${col}-500/10 text-${col}-400 text-[10px] font-semibold rounded-full uppercase">${c.category}</span>
+                    ${c.badge?`<span class="px-2 py-0.5 bg-bd-red/10 text-bd-red text-[10px] font-semibold rounded-full">${badgeLabels[c.badge]||c.badge}</span>`:''}
+                </div>
+                <p class="text-sm text-white/30 truncate">${c.bio}</p>
+                <div class="flex flex-wrap gap-3 mt-1.5 text-xs text-white/20">
+                    ${c.visits&&c.visits!=='0'?`<span>🎮 ${c.visits} visits</span>`:''}
+                    ${c.projects&&c.projects!=='0'?`<span>🏗️ ${c.projects} games</span>`:''}
+                    ${c.followers&&c.followers!=='0'?`<span>👥 ${c.followers} followers</span>`:''}
+                    ${c.location?`<span>📍 ${c.location}</span>`:''}
+                </div>
             </div>
-        </div>
-        <button onclick="deleteCreator('${c.id}')" class="flex-shrink-0 p-2.5 bg-bd-red/5 hover:bg-bd-red/15 text-bd-red/60 hover:text-bd-red rounded-xl transition-all border border-bd-red/10 hover:border-bd-red/20" title="Delete">
-            <i data-lucide="trash-2" class="w-4 h-4"></i>
-        </button>
-    </div>`).join('');
+            <button onclick="deleteCreator('${c.id}')" class="flex-shrink-0 p-2.5 bg-bd-red/5 hover:bg-bd-red/15 text-bd-red/60 hover:text-bd-red rounded-xl transition-all border border-bd-red/10 hover:border-bd-red/20" title="Delete">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+        </div>`}).join('');
     lucide.createIcons();
 }
-function deleteCreator(id){
-    let list=LS.get('bd_creators',[]);
-    list=list.filter(c=>c.id!==id);
-    LS.set('bd_creators',list);
-    renderCreators();updateStats();toast('Creator removed','info');
+
+async function deleteCreator(id){
+    if(!confirm('Delete this creator from the database?'))return;
+    const {error}=await sb.from('creators').delete().eq('id',id);
+    if(error){toast('Error: '+error.message,'error');return}
+    renderCreators();updateStats();toast('Creator removed from database','info');
 }
 
 // ===== NEWS =====
-document.getElementById('addNewsBtn').addEventListener('click',()=>{
+document.getElementById('addNewsBtn').addEventListener('click',async()=>{
     const title=document.getElementById('nTitle').value.trim();
     const category=document.getElementById('nCategory').value;
     const date=document.getElementById('nDate').value;
     const summary=document.getElementById('nSummary').value.trim();
     const content=document.getElementById('nContent').value.trim();
+    const featured=document.getElementById('nFeatured').checked;
     if(!title||!summary){toast('Please fill in title and summary','error');return}
-    const list=LS.get('bd_news',[]);
-    list.unshift({id:genId(),title,category,date:date||new Date().toISOString().split('T')[0],summary,content,featured:list.length===0});
-    LS.set('bd_news',list);
+    setLoading('n',true);
+    const {data,error}=await sb.from('news').insert([{title,category,date:date||new Date().toISOString().split('T')[0],summary,content,featured}]).select();
+    setLoading('n',false);
+    if(error){toast('Error: '+error.message,'error');return}
     ['nTitle','nSummary','nContent'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('nDate').value='';
-    renderNews();updateStats();toast('News added successfully!');
+    document.getElementById('nFeatured').checked=false;
+    renderNews();updateStats();toast('News added to database!');
 });
-function renderNews(){
-    const list=LS.get('bd_news',[]);
+
+async function renderNews(){
     const el=document.getElementById('newsList');
-    if(!list.length){el.innerHTML='<div class="text-center py-12 text-white/20"><i data-lucide="newspaper" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p>No news yet. Add one above.</p></div>';lucide.createIcons();return}
-    el.innerHTML=list.map(n=>`
-    <div class="bg-bd-card rounded-2xl p-5 border border-bd-border card-hover">
-        <div class="flex flex-col sm:flex-row sm:items-start gap-4">
-            <div class="flex-1 min-w-0">
-                <div class="flex flex-wrap items-center gap-2 mb-2">
-                    ${n.featured?'<span class="px-2.5 py-0.5 bg-bd-red/10 text-bd-red text-[10px] font-semibold rounded-full">FEATURED</span>':''}
-                    <span class="px-2.5 py-0.5 bg-${catColors[n.category]||'blue'}-500/10 text-${catColors[n.category]||'blue'}-400 text-[10px] font-semibold rounded-full uppercase">${n.category}</span>
-                    <span class="text-xs text-white/20">${formatDate(n.date)}</span>
+    el.innerHTML='<div class="text-center py-8"><span class="loading-spinner" style="width:24px;height:24px;border-width:3px"></span></div>';
+    const {data:list,error}=await sb.from('news').select('*').order('created_at',{ascending:false});
+    if(error){el.innerHTML=`<div class="text-center py-12 text-bd-red"><p>Error: ${error.message}</p></div>`;return}
+    if(!list.length){el.innerHTML=`<div class="text-center py-12 text-white/20"><i data-lucide="newspaper" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p>No news yet. Add one above.</p></div>`;lucide.createIcons();return}
+    el.innerHTML=list.map(n=>{
+        const col=catColors[n.category]||'blue';
+        return `
+        <div class="bg-bd-card rounded-2xl p-5 border border-bd-border card-hover">
+            <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+                <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        ${n.featured?'<span class="px-2.5 py-0.5 bg-bd-red/10 text-bd-red text-[10px] font-semibold rounded-full">FEATURED</span>':''}
+                        <span class="px-2.5 py-0.5 bg-${col}-500/10 text-${col}-400 text-[10px] font-semibold rounded-full uppercase">${n.category}</span>
+                        <span class="text-xs text-white/20">${formatDate(n.date)}</span>
+                    </div>
+                    <h4 class="font-semibold text-lg mb-1">${n.title}</h4>
+                    <p class="text-sm text-white/30">${n.summary}</p>
+                    ${n.content?`<p class="text-xs text-white/15 mt-2 line-clamp-2">${n.content}</p>`:''}
                 </div>
-                <h4 class="font-semibold text-lg mb-1">${n.title}</h4>
-                <p class="text-sm text-white/30">${n.summary}</p>
-                ${n.content?`<p class="text-xs text-white/15 mt-2 line-clamp-2">${n.content}</p>`:''}
+                <button onclick="deleteNews('${n.id}')" class="flex-shrink-0 p-2.5 bg-bd-red/5 hover:bg-bd-red/15 text-bd-red/60 hover:text-bd-red rounded-xl transition-all border border-bd-red/10 hover:border-bd-red/20" title="Delete">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
             </div>
-            <button onclick="deleteNews('${n.id}')" class="flex-shrink-0 p-2.5 bg-bd-red/5 hover:bg-bd-red/15 text-bd-red/60 hover:text-bd-red rounded-xl transition-all border border-bd-red/10 hover:border-bd-red/20" title="Delete">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-            </button>
-        </div>
-    </div>`).join('');
+        </div>`}).join('');
     lucide.createIcons();
 }
-function deleteNews(id){
-    let list=LS.get('bd_news',[]);
-    list=list.filter(n=>n.id!==id);
-    LS.set('bd_news',list);
-    renderNews();updateStats();toast('News removed','info');
+
+async function deleteNews(id){
+    if(!confirm('Delete this news article from the database?'))return;
+    const {error}=await sb.from('news').delete().eq('id',id);
+    if(error){toast('Error: '+error.message,'error');return}
+    renderNews();updateStats();toast('News removed from database','info');
 }
 
 // ===== UPDATES =====
-document.getElementById('addUpdateBtn').addEventListener('click',()=>{
+document.getElementById('addUpdateBtn').addEventListener('click',async()=>{
     const title=document.getElementById('uTitle').value.trim();
     const category=document.getElementById('uCategory').value;
     const date=document.getElementById('uDate').value;
     const desc=document.getElementById('uDesc').value.trim();
     if(!title||!desc){toast('Please fill in title and description','error');return}
-    const list=LS.get('bd_updates',[]);
-    list.unshift({id:genId(),title,category,date:date||new Date().toISOString().split('T')[0],desc});
-    LS.set('bd_updates',list);
+    setLoading('u',true);
+    const {data,error}=await sb.from('updates').insert([{title,category,date:date||new Date().toISOString().split('T')[0],description:desc}]).select();
+    setLoading('u',false);
+    if(error){toast('Error: '+error.message,'error');return}
     ['uTitle','uDesc'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('uDate').value='';
-    renderUpdates();updateStats();toast('Update added successfully!');
+    renderUpdates();updateStats();toast('Update added to database!');
 });
-function renderUpdates(){
-    const list=LS.get('bd_updates',[]);
+
+async function renderUpdates(){
     const el=document.getElementById('updatesList');
-    if(!list.length){el.innerHTML='<div class="text-center py-12 text-white/20"><i data-lucide="refresh-cw" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p>No updates yet. Add one above.</p></div>';lucide.createIcons();return}
-    el.innerHTML=list.map(u=>`
-    <div class="bg-bd-card rounded-2xl p-5 border border-bd-border card-hover">
-        <div class="flex flex-col sm:flex-row sm:items-start gap-4">
-            <div class="flex-1 min-w-0">
-                <div class="flex flex-wrap items-center gap-2 mb-2">
-                    <span class="px-2.5 py-0.5 bg-${catColors[u.category]||'amber'}-500/10 text-${catColors[u.category]||'amber'}-400 text-[10px] font-semibold rounded-full uppercase">${u.category}</span>
-                    <span class="text-xs text-white/20">${formatDate(u.date)}</span>
+    el.innerHTML='<div class="text-center py-8"><span class="loading-spinner" style="width:24px;height:24px;border-width:3px"></span></div>';
+    const {data:list,error}=await sb.from('updates').select('*').order('created_at',{ascending:false});
+    if(error){el.innerHTML=`<div class="text-center py-12 text-bd-red"><p>Error: ${error.message}</p></div>`;return}
+    if(!list.length){el.innerHTML=`<div class="text-center py-12 text-white/20"><i data-lucide="refresh-cw" class="w-12 h-12 mx-auto mb-3 opacity-30"></i><p>No updates yet. Add one above.</p></div>`;lucide.createIcons();return}
+    el.innerHTML=list.map(u=>{
+        const col=catColors[u.category]||'amber';
+        return `
+        <div class="bg-bd-card rounded-2xl p-5 border border-bd-border card-hover">
+            <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+                <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <span class="px-2.5 py-0.5 bg-${col}-500/10 text-${col}-400 text-[10px] font-semibold rounded-full uppercase">${u.category}</span>
+                        <span class="text-xs text-white/20">${formatDate(u.date)}</span>
+                    </div>
+                    <h4 class="font-semibold mb-1">${u.title}</h4>
+                    <p class="text-sm text-white/30">${u.description}</p>
                 </div>
-                <h4 class="font-semibold mb-1">${u.title}</h4>
-                <p class="text-sm text-white/30">${u.desc}</p>
+                <button onclick="deleteUpdate('${u.id}')" class="flex-shrink-0 p-2.5 bg-bd-red/5 hover:bg-bd-red/15 text-bd-red/60 hover:text-bd-red rounded-xl transition-all border border-bd-red/10 hover:border-bd-red/20" title="Delete">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
             </div>
-            <button onclick="deleteUpdate('${u.id}')" class="flex-shrink-0 p-2.5 bg-bd-red/5 hover:bg-bd-red/15 text-bd-red/60 hover:text-bd-red rounded-xl transition-all border border-bd-red/10 hover:border-bd-red/20" title="Delete">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-            </button>
-        </div>
-    </div>`).join('');
+        </div>`}).join('');
     lucide.createIcons();
 }
-function deleteUpdate(id){
-    let list=LS.get('bd_updates',[]);
-    list=list.filter(u=>u.id!==id);
-    LS.set('bd_updates',list);
-    renderUpdates();updateStats();toast('Update removed','info');
+
+async function deleteUpdate(id){
+    if(!confirm('Delete this update from the database?'))return;
+    const {error}=await sb.from('updates').delete().eq('id',id);
+    if(error){toast('Error: '+error.message,'error');return}
+    renderUpdates();updateStats();toast('Update removed from database','info');
 }
 </script>
 </body>
